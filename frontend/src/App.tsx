@@ -1,10 +1,14 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Register from "./components/Register"
 
 const App = () => {
   return (
     <>
-      <div className="flex justify-center items-center h-screen">
-        
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Register />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

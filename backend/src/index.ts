@@ -1,8 +1,9 @@
 import express from "express"
-import userRoute from "./routes/userRoute"
-import cors from "cors"
-import mongoose from "mongoose"
 import 'dotenv/config'
+import cors from "cors"
+import userRoute from "./routes/userRoute"
+import { connectDB } from "./config/db"
+
 const app = express()
 
 app.use(express.json())
@@ -13,15 +14,6 @@ app.use(
     credentials: true,
   })
 )
-
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URL)
-    console.log("DB is connected")
-  } catch (error) {
-    console.error("Error connecting to the database:", error.message)
-  }
-}
 
 connectDB()
 

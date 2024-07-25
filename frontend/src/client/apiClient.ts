@@ -3,7 +3,7 @@ import { RegisterFormData } from "../components/Register"
 const url = import.meta.env.VITE_API_BASE_URL
 
 export const registeruser = async (data: RegisterFormData) => {
-  const response = await fetch(`${url}/api/register`, {
+  const response = await fetch(`${url}/api/users/register`, {
     method: "POST",
     credentials: "include",
     headers: {

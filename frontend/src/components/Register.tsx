@@ -29,6 +29,8 @@ const Register = () => {
   })
 
   const onSubmit = handleSubmit((data) => {
+    console.log("form data: ", data);
+    
     mutation.mutate(data)
   })
 
@@ -93,6 +95,7 @@ const Register = () => {
             </span>
           )}
         </label>
+        <button type="submit">submit</button>
         <span className="flex items-center justify-between">
           <span className="text-sm">
             Already have an account ?{" "}
