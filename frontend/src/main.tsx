@@ -3,15 +3,24 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./App.tsx"
 import "./index.css"
+import UserContextProvider from "./context/UserContext.tsx"
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+    },
+  },
+})
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <>
-    <QueryClientProvider client={queryClient} >
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <UserContextProvider>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      </UserContextProvider>
     </QueryClientProvider>
   </>
 )

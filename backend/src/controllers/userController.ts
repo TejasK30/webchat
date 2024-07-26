@@ -1,8 +1,16 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { z } from "zod"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 import UserModel from "../models/User"
+
+declare global {
+  namespace Express {
+    interface Request {
+      userId: string
+    }
+  }
+}
 
 const registerSchema = z.object({
   username: z.string(),
@@ -108,5 +116,20 @@ export const loginController = async(req: Request, res: Response) => {
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: "Something went wrong" })
+  }
+}
+
+export const validateUserController = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.cookies["auth_token"]
+  if (!token) {
+    return res.status(401).json({ message: "unauthorized" })
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string)
+    req.userId = (decoded as JwtPayload).userId
+    next()
+  } catch (error) {
+    return res.status(401).json({ message: "unauthorized" })
   }
 }

@@ -1,6 +1,21 @@
 import { IoSend } from "react-icons/io5"
+import useUserContext from "../hooks/useUserContext"
+import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
 
 const Chat = () => {
+
+  const { isLoggedin, isLoading } = useUserContext()
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(!isLoggedin && isLoading ){
+      navigate('/login')
+    }
+  }, [isLoading, isLoggedin, navigate])
+
+
   return (
     <>
       <div className="flex flex-col h-screen">
@@ -37,8 +52,10 @@ const Chat = () => {
               <div className="flex items-center justify-center h-8 w-8 rounded-[50%] bg-red-700 text-gray-100 m-2 py-2">
                 J
               </div>
-
-              <h3 className="text-xl text-gray-100 py-2">John Doe</h3>
+              <div className="flex flex-col ">
+              <h3 className="text-md text-gray-100 ">John Doe</h3>
+              <h2 className="text-sm text-green-300">Online</h2>
+              </div>
             </div>
 
             <div className="flex flex-col space-y-4 p-4 flex-grow">

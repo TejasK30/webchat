@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { loginuser } from "../client/apiClient"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 export interface LoginFormData {
   email: string
@@ -12,6 +12,8 @@ export interface LoginFormData {
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
+
+  const navigate = useNavigate()
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
@@ -27,6 +29,7 @@ const Login = () => {
     mutationFn: loginuser,
     onSuccess: () => {
       console.log("success")
+      navigate('/chat')
     },
     onError: () => {
       console.log("error")

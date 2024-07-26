@@ -34,7 +34,7 @@ export const registeruser = async (data: RegisterFormData) => {
 }
 
 export const loginuser = async (data: LoginFormData) => {
-  const response = await fetch(`${url}/api/users/register`, {
+  const response = await fetch(`${url}/api/users/login`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -49,5 +49,11 @@ export const loginuser = async (data: LoginFormData) => {
 }
 
 export const validateUser = async() => {
-  
+  const response = await fetch(`${url}/api/users/verify-user`, {
+    credentials: "include",
+  })
+  if (!response.ok) {
+    throw new Error("token invalid")
+  }
+  return response.json()
 }
