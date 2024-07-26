@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { checkUsername, registeruser } from "../client/apiClient"
 import { useEffect, useState } from "react"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
@@ -16,6 +16,8 @@ const Register = () => {
   const [username, setUsername] = useState<string>("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const navigate = useNavigate()
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
@@ -38,6 +40,7 @@ const Register = () => {
     mutationFn: registeruser,
     onSuccess: () => {
       console.log("Registration successful")
+      navigate('/login')
     },
     onError: (error: Error) => {
       console.log("Registration error", error)
@@ -78,7 +81,6 @@ const Register = () => {
   }, [username, setError, clearErrors, usernameCheckMutation])
 
   const onSubmit = handleSubmit((data) => {
-    console.log("form data: ", data)
     registerMutation.mutate(data)
   })
 
