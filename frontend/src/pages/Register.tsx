@@ -85,7 +85,7 @@ const Register = () => {
   return (
     <div className="flex justify-center items-center flex-col h-screen">
       <form
-        className="flex flex-col justify-center max-w-md w-full p-4 border rounded-lg shadow-md"
+        className="flex flex-col justify-center max-w-md w-full p-4 border-2 border-gray-500 rounded-lg shadow-2xl"
         onSubmit={onSubmit}
       >
         <h2 className="text-3xl font-bold mb-5">Create an Account</h2>
@@ -147,7 +147,8 @@ const Register = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-500"
                 onClick={togglePasswordVisibility}
               >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                {showPassword && <FaEye />}
+                {!showPassword && <FaEyeSlash />}{" "}
               </span>
             </div>
             {errors.password && (
@@ -183,7 +184,8 @@ const Register = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-500"
                 onClick={toggleConfirmPasswordVisibility}
               >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                {showPassword && <FaEye />}
+                {!showPassword && <FaEyeSlash />}{" "}
               </span>
             </div>
             {errors.confirmPassword && (
@@ -203,7 +205,7 @@ const Register = () => {
 
         <div className="mt-4 text-sm">
           Already have an account?{" "}
-          <Link className="text-blue-600" to={"/sign-in"}>
+          <Link className="text-blue-600" to={"/login"}>
             Login here
           </Link>
         </div>

@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { z } from "zod"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 import UserModel from "../models/User"
 
 const registerSchema = z.object({
@@ -8,9 +9,12 @@ const registerSchema = z.object({
   email: z.string().email({ message: "Inavalid email format !" }),
   password: z.string(),
 })
+const loginSchema = z.object({
+  email: z.string().email({ message: "Inavalid email format !" }),
+  password: z.string(),
+})
 
-export const checkUsernameController = async(req: Request, res: Response) => {
-
+export const checkUsernameController = async (req: Request, res: Response) => {
   const { username } = req.body
 
   try {
@@ -19,12 +23,16 @@ export const checkUsernameController = async(req: Request, res: Response) => {
     })
 
     if (usernameExists) {
-      return res.status(400).json({ message: "User already exists" , exists: true})
+      return res
+        .status(400)
+        .json({ message: "User already exists", exists: true })
     }
-    
-    return res.status(400).json({ message: "username available" , exists: false})
+
+    return res
+      .status(400)
+      .json({ message: "username available", exists: false })
   } catch (error) {
-    res.status(500).json({message: "Internal server error"})
+    res.status(500).json({ message: "Internal server error" })
   }
 }
 
@@ -65,5 +73,40 @@ export const registerController = async (req: Request, res: Response) => {
       })
       console.log(error)
     }
+  }
+}
+
+export const loginController = async(req: Request, res: Response) => {
+  registerSchema.safeParse(req.body)
+
+  const { email, password } = req.body
+  try {
+    const user = await UserModel.findOne({ email })
+    if (!user) {
+      return res.status(400).json({ message: "Invalid Credentials" })
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid Credentials" })
+    }
+
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET_KEY as string,
+      {
+        expiresIn: "1d",
+      }
+    )
+
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      maxAge: 86400000,
+      secure: true
+    })
+    res.status(200).json({ userId: user._id })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Something went wrong" })
   }
 }
