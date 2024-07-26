@@ -47,3 +47,7 @@ export const loginuser = async (data: LoginFormData) => {
     throw new Error("Something went wrong!")
   }
 }
+
+export const validateUser = async() => {
+  
+}
