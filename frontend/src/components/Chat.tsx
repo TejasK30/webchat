@@ -2,10 +2,13 @@ import { IoSend } from "react-icons/io5"
 import useUserContext from "../hooks/useUserContext"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
+import useSocket from "../hooks/useSocket"
 
 const Chat = () => {
 
   const { isLoggedin, isLoading } = useUserContext()
+
+  const socket = useSocket()
 
   const navigate = useNavigate()
 

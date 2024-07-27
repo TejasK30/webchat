@@ -1,16 +1,13 @@
 import { useQuery } from "@tanstack/react-query"
 import { createContext } from "react"
 import { validateUser } from "../client/apiClient"
+import { props } from "../utils/types"
 
 export interface UserContextType {
   isLoggedin: boolean
   isLoading: boolean
 }
 
-
-interface props {
-  children: React.ReactNode
-}
 
 export const UserContext = createContext<UserContextType | undefined>(undefined)
 

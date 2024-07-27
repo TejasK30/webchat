@@ -4,11 +4,8 @@ import { loginuser } from "../client/apiClient"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import { LoginFormData } from "../utils/types"
 
-export interface LoginFormData {
-  email: string
-  password: string
-}
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)

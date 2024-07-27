@@ -4,13 +4,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { checkUsername, registeruser } from "../client/apiClient"
 import { useEffect, useState } from "react"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
-
-export type RegisterFormData = {
-  username: string
-  email: string
-  password: string
-  confirmPassword: string
-}
+import { RegisterFormData } from "../utils/types"
 
 const Register = () => {
   const [username, setUsername] = useState<string>("")
