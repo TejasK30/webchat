@@ -1,23 +1,33 @@
 import { IoSend } from "react-icons/io5"
 import useUserContext from "../hooks/useUserContext"
 import { useNavigate } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import useSocket from "../hooks/useSocket"
 
 const Chat = () => {
-
   const { isLoggedin, isLoading } = useUserContext()
+  const [message, setMessage] = useState<string>("")
+  const [messages, setMessages] = useState<string[]>(["hello", "world"])
+
+  const fromRef = useRef<HTMLFormElement>(null)
 
   const socket = useSocket()
 
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(!isLoggedin && isLoading ){
-      navigate('/login')
+    if (!isLoggedin && isLoading) {
+      navigate("/login")
     }
   }, [isLoading, isLoggedin, navigate])
 
+  const sendMessage = async (e: React.FormEvent<HTMLInputElement> ) => {
+    e.preventDefault()
+    socket.emit("send-message", message)
+    setMessages((prevMessages) => [...prevMessages, message])
+    setMessage("")
+    fromRef?.current?.reset()
+  }
 
   return (
     <>
@@ -35,18 +45,6 @@ const Chat = () => {
               <h3>John Doe</h3>
               <h4 className="text-sm font-bold text-green-800">Online</h4>
             </div>
-            <div className="mt-[1px] py-2 flex justify-between items-center p-1 border-b-2 hover:bg-green-200">
-              <h3>John Doe</h3>
-              <h4 className="text-sm font-bold text-green-800">Online</h4>
-            </div>
-            <div className="mt-[1px] py-2 flex justify-between items-center p-1 border-b-2 hover:bg-green-200">
-              <h3>John Doe</h3>
-              <h4 className="text-sm font-bold text-green-800">Online</h4>
-            </div>
-            <div className="mt-[1px] py-2 flex justify-between items-center p-1 border-b-2 hover:bg-green-200">
-              <h3>John Doe</h3>
-              <h4 className="text-sm font-bold text-green-800">Online</h4>
-            </div>
           </div>
 
           {/* Chat UI div */}
@@ -56,8 +54,8 @@ const Chat = () => {
                 J
               </div>
               <div className="flex flex-col ">
-              <h3 className="text-md text-gray-100 ">John Doe</h3>
-              <h2 className="text-sm text-green-300">Online</h2>
+                <h3 className="text-md text-gray-100 ">John Doe</h3>
+                <h2 className="text-sm text-green-300">Online</h2>
               </div>
             </div>
 
@@ -66,22 +64,29 @@ const Chat = () => {
                 message1
               </div>
 
-              <div className="self-end bg-blue-100 p-2 rounded-lg max-w-[50%]">
-                message2
+              {messages.map((msg) => (
+                <div className="self-end bg-blue-100 p-2 rounded-lg max-w-[50%]">
+                  {msg}
+                </div>
+              ))}
+            </div>
+            <form ref={fromRef} onSubmit={sendMessage}>
+              <div className="flex items-center justify-center w-full bg-blue-200 mb-1 gap-1">
+                <input
+                  type="text"
+                  placeholder="Enter message"
+                  className="flex w-full py-2 px-1 outline-none rounded-md ml-1"
+                  onChange={(e) => setMessage(e.target.value)}
+                  autoFocus
+                />
+                <IoSend
+                  size={30}
+                  color="blue"
+                  className="bg-blue-400 h-full rounded-md py-2 px-1"
+                  onClick={sendMessage}
+                />
               </div>
-            </div>
-            <div className="flex items-center w-full bg-blue-200 mb-1 gap-1">
-              <input
-                type="text"
-                placeholder="Enter message"
-                className="flex w-full py-2 px-1 outline-none rounded-md ml-1"
-              />
-              <IoSend
-                size={30}
-                color="blue"
-                className="bg-blue-400 h-full rounded-md p-1"
-              />
-            </div>
+            </form>
           </div>
         </div>
       </div>

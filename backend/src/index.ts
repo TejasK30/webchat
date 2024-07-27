@@ -1,16 +1,16 @@
 import express from "express"
-import 'dotenv/config'
+import "dotenv/config"
 import cors from "cors"
-import cookieParser from 'cookie-parser'
+import cookieParser from "cookie-parser"
 import userRoute from "./routes/userRoute"
 import { connectDB } from "./config/db"
-import { Server, Socket } from 'socket.io'
+import { Server, Socket } from "socket.io"
 
 const app = express()
 const io = new Server({
   cors: {
-    origin: 'http://localhost:5173'
-  }
+    origin: "http://localhost:5173",
+  },
 })
 
 io.listen(5001)
@@ -30,8 +30,11 @@ connectDB()
 app.use("/api/users", userRoute)
 
 io.on("connection", (socket) => {
-  console.log("Socket connected: ", socket.id);
-  
+  console.log("Socket connected: ", socket.id)
+
+  socket.on("send-message", (msg) => {
+    console.log("New message: ", msg)
+  })
 })
 
 app.listen(5000, () => {
