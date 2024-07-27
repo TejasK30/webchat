@@ -1,13 +1,18 @@
 import { IoSend } from "react-icons/io5"
 import useUserContext from "../hooks/useUserContext"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import useSocket from "../hooks/useSocket"
+import { useUserStore } from "../store/user"
 
 const Chat = () => {
   const { isLoggedin, isLoading } = useUserContext()
   const [message, setMessage] = useState<string>("")
   const [messages, setMessages] = useState<string[]>(["hello", "world"])
+
+  const { userId, username, email } = useUserStore()
+
+  console.log(`user id: ${userId} \nuser name: ${username} \n user email: ${email}`)
 
   const fromRef = useRef<HTMLFormElement>(null)
 
@@ -15,19 +20,29 @@ const Chat = () => {
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (!isLoggedin && isLoading) {
-      navigate("/login")
-    }
-  }, [isLoading, isLoggedin, navigate])
+  const sendMessage = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      socket.emit("send-message", message)
+      setMessages((prevMessages) => [...prevMessages, message])
+      setMessage("")
+      fromRef?.current?.reset()
+    },
+    [message, socket]
+  )
 
-  const sendMessage = async (e: React.FormEvent<HTMLInputElement> ) => {
-    e.preventDefault()
+  const sendMessageONClick = async () => {
     socket.emit("send-message", message)
     setMessages((prevMessages) => [...prevMessages, message])
     setMessage("")
     fromRef?.current?.reset()
   }
+
+  useEffect(() => {
+    if (!isLoggedin && isLoading) {
+      navigate("/login")
+    }
+  }, [isLoading, isLoggedin, navigate])
 
   return (
     <>
@@ -83,7 +98,7 @@ const Chat = () => {
                   size={30}
                   color="blue"
                   className="bg-blue-400 h-full rounded-md py-2 px-1"
-                  onClick={sendMessage}
+                  onClick={sendMessageONClick}
                 />
               </div>
             </form>

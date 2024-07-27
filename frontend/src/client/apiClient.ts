@@ -46,6 +46,10 @@ export const loginuser = async (data: LoginFormData) => {
   if (!response.ok) {
     throw new Error("Something went wrong!")
   }
+  const userData = await response.json()
+
+  return userData
+
 }
 
 export const validateUser = async() => {

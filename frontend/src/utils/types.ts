@@ -13,3 +13,16 @@ export interface LoginFormData {
 export interface props {
   children: React.ReactNode
 }
+
+export interface MessageTypes {
+  text: string
+  sender: string
+  receiver: string
+  timestamp: Date
+}
+
+export interface userInfo{
+  userId: string
+  username: string
+  email: string
+}
