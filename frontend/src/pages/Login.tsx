@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { LoginFormData, userInfo } from "../utils/types"
-import { useUserStore } from "../store/user"
+import { useUserStore } from "../store/userStore"
 
 
 const Login = () => {
@@ -34,7 +34,7 @@ const Login = () => {
         username: userData.username,
         email: userData.email
       })
-      navigate('/chat')
+      navigate('/')
     },
     onError: () => {
       console.log("error")

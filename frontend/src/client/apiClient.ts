@@ -1,5 +1,4 @@
-import { LoginFormData } from "../pages/Login"
-import { RegisterFormData } from "../pages/Register"
+import { RegisterFormData, LoginFormData } from '../utils/types'
 
 const url = import.meta.env.VITE_API_BASE_URL
 

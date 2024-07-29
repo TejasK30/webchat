@@ -3,16 +3,19 @@ import useUserContext from "../hooks/useUserContext"
 import { useNavigate } from "react-router-dom"
 import { useCallback, useEffect, useRef, useState } from "react"
 import useSocket from "../hooks/useSocket"
-import { useUserStore } from "../store/user"
+import { useUserStore } from "../store/userStore"
 
 const Chat = () => {
-  const { isLoggedin, isLoading } = useUserContext()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { isLoggedin } = useUserContext()
   const [message, setMessage] = useState<string>("")
   const [messages, setMessages] = useState<string[]>(["hello", "world"])
 
   const { userId, username, email } = useUserStore()
 
-  console.log(`user id: ${userId} \nuser name: ${username} \n user email: ${email}`)
+  console.log(
+    `user id: ${userId} \nuser name: ${username} \n user email: ${email}`
+  )
 
   const fromRef = useRef<HTMLFormElement>(null)
 
@@ -39,10 +42,14 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    if (!isLoggedin && isLoading) {
-      navigate("/login")
+    const checkUserloggedIn = async () => {
+      if (!isLoggedin) {
+        navigate("/login")
+      }
     }
-  }, [isLoading, isLoggedin, navigate])
+
+    checkUserloggedIn()
+  }, [isLoggedin, navigate])
 
   return (
     <>
