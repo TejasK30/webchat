@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useCallback, useEffect, useRef, useState } from "react"
 import useSocket from "../hooks/useSocket"
 import { useUserStore } from "../store/userStore"
+import { MessageType } from "../utils/types"
 
 const Chat = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,12 +27,19 @@ const Chat = () => {
   const sendMessage = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      socket.emit("send-message", message)
+      const msg: MessageType = {
+        sender: username,
+        senderId: userId,
+        receiver: email,
+        receiverId: message,
+        text: message
+      }
+      socket.emit("send-message", msg)
       setMessages((prevMessages) => [...prevMessages, message])
       setMessage("")
       fromRef?.current?.reset()
     },
-    [message, socket]
+    [email, message, socket, userId, username]
   )
 
   const sendMessageONClick = async () => {

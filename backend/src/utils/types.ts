@@ -1,6 +1,8 @@
-export interface MessageTypes {
-  text: string
+export interface MessageType {
+  senderId: string
   sender: string
   receiver: string
-  timestamp: Date
+  receiverId: string
+  text: string
 }
+

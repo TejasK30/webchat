@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import userRoute from "./routes/userRoute"
 import { connectDB } from "./config/db"
 import { Server, Socket } from "socket.io"
+import MessgaeModel from "./models/Message"
 
 const app = express()
 const io = new Server({
@@ -32,8 +33,18 @@ app.use("/api/users", userRoute)
 io.on("connection", (socket) => {
   console.log("Socket connected: ", socket.id)
 
-  socket.on("send-message", (msg) => {
-    console.log("New message: ", msg)
+  socket.on("send-message", async(msg) => {
+
+    const message = new MessgaeModel({
+      senderId: msg.senderId,
+      sender: msg.email,
+      receiverId: msg.receiverId,
+      receiver: msg.to,
+      text: msg.text,
+    })
+
+    await message.save()
+
   })
 })
 

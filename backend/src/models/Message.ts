@@ -1,12 +1,19 @@
 import { model, Schema } from "mongoose";
-import { MessageTypes } from "utils/types";
 
-const MessageSchema = new Schema<MessageTypes>({
+const MessageSchema = new Schema({
   text: {
     type: String,
     required: true,
   },
+  senderId: {
+    type: String,
+    required: true,
+  },
   sender: {
+    type: String,
+    required: true,
+  },
+  receiverId: {
     type: String,
     required: true,
   },
