@@ -1,22 +1,26 @@
-import { IoSend } from "react-icons/io5"
-import useUserContext from "../hooks/useUserContext"
-import { useNavigate } from "react-router-dom"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { IoSend } from "react-icons/io5"
+import { useNavigate } from "react-router-dom"
 import useSocket from "../hooks/useSocket"
+import useUserContext from "../hooks/useUserContext"
 import { useUserStore } from "../store/userStore"
 import { MessageType } from "../utils/types"
+import FriendsList from "./FriendList"
 
 const Chat = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isLoggedin } = useUserContext()
-  const [message, setMessage] = useState<string>("")
-  const [messages, setMessages] = useState<string[]>(["hello", "world"])
+  const [message, setMessage] = useState<MessageType>({
+    sender: "",
+    senderId: "",
+    receiver: "",
+    receiverId: "",
+    text: "",
+  })
+
+  const [textmessage, setTextMessage] = useState<string>("")
+  const [messages, setMessages] = useState<MessageType[]>([])
 
   const { userId, username, email } = useUserStore()
-
-  console.log(
-    `user id: ${userId} \nuser name: ${username} \n user email: ${email}`
-  )
 
   const fromRef = useRef<HTMLFormElement>(null)
 
@@ -31,23 +35,22 @@ const Chat = () => {
         sender: username,
         senderId: userId,
         receiver: email,
-        receiverId: message,
-        text: message
+        receiverId: "receiver-id",
+        text: textmessage,
       }
       socket.emit("send-message", msg)
       setMessages((prevMessages) => [...prevMessages, message])
-      setMessage("")
+      setMessage({
+        sender: "",
+        senderId: "",
+        receiver: "",
+        receiverId: "",
+        text: "",
+      })
       fromRef?.current?.reset()
     },
-    [email, message, socket, userId, username]
+    [email, message, socket, textmessage, userId, username]
   )
-
-  const sendMessageONClick = async () => {
-    socket.emit("send-message", message)
-    setMessages((prevMessages) => [...prevMessages, message])
-    setMessage("")
-    fromRef?.current?.reset()
-  }
 
   useEffect(() => {
     const checkUserloggedIn = async () => {
@@ -64,21 +67,17 @@ const Chat = () => {
       <div className="flex flex-col h-screen">
         <div className="flex h-full">
           {/* People div */}
-          <div className="flex flex-col w-[30%]">
-            <div className="flex w-full items-center">
+          <div className="flex flex-col">
               <h3 className="flex w-full font-bold text-2xl text-center bg-green-500 py-2">
                 Friends
               </h3>
-            </div>
-
-            <div className="mt-[1px] py-2 flex justify-between items-center p-1 border-b-2 hover:bg-green-200">
-              <h3>John Doe</h3>
-              <h4 className="text-sm font-bold text-green-800">Online</h4>
+            <div className="flex w-full items-center ">
+              <FriendsList />
             </div>
           </div>
 
           {/* Chat UI div */}
-          <div className="flex flex-col w-[70%] bg-blue-200">
+          <div className="flex flex-col w-full bg-blue-200">
             <div className="flex bg-blue-500 items-center">
               <div className="flex items-center justify-center h-8 w-8 rounded-[50%] bg-red-700 text-gray-100 m-2 py-2">
                 J
@@ -96,7 +95,7 @@ const Chat = () => {
 
               {messages.map((msg) => (
                 <div className="self-end bg-blue-100 p-2 rounded-lg max-w-[50%]">
-                  {msg}
+                  {msg.text}
                 </div>
               ))}
             </div>
@@ -106,14 +105,13 @@ const Chat = () => {
                   type="text"
                   placeholder="Enter message"
                   className="flex w-full py-2 px-1 outline-none rounded-md ml-1"
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={(e) => setTextMessage(e.target.value)}
                   autoFocus
                 />
                 <IoSend
                   size={30}
                   color="blue"
                   className="bg-blue-400 h-full rounded-md py-2 px-1"
-                  onClick={sendMessageONClick}
                 />
               </div>
             </form>

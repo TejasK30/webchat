@@ -21,7 +21,7 @@ export interface MessageTypes {
   timestamp: Date
 }
 
-export interface userInfo{
+export interface userInfo {
   userId: string
   username: string
   email: string
@@ -33,4 +33,28 @@ export interface MessageType {
   receiver: string
   receiverId: string
   text: string
+}
+
+export type User = {
+  _id: string
+  username: string
+  email: string
+}
+
+export interface FriendDetails {
+  _id: string
+  username: string
+  email: string
+}
+
+export interface Friend {
+  _id: string
+  userId: string
+  friends: FriendDetails[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface FriendsResponse {
+  friends: Friend[]
 }

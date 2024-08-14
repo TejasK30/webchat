@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
-import { checkUsername, registeruser } from "../client/apiClient"
-import { useEffect, useState } from "react"
+import { registeruser } from "../client/apiClient"
+import { useState } from "react"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { RegisterFormData } from "../utils/types"
 
@@ -25,8 +25,8 @@ const Register = () => {
     register,
     watch,
     handleSubmit,
-    setError,
-    clearErrors,
+    // setError,
+    // clearErrors,
     formState: { errors },
   } = useForm<RegisterFormData>()
 
@@ -41,38 +41,38 @@ const Register = () => {
     },
   })
 
-  const usernameCheckMutation = useMutation({
-    mutationFn: checkUsername,
-    onSuccess: (exists) => {
-      if (exists) {
-        setError("username", {
-          type: "manual",
-          message: "Username already exists",
-        })
-      } else {
-        clearErrors("username")
-      }
-    },
-    onError: (error: Error) => {
-      console.error("Error checking username:", error)
-    },
-  })
+  // const usernameCheckMutation = useMutation({
+  //   mutationFn: checkUsername,
+  //   onSuccess: (exists) => {
+  //     if (exists) {
+  //       setError("username", {
+  //         type: "manual",
+  //         message: "Username already exists",
+  //       })
+  //     } else {
+  //       clearErrors("username")
+  //     }
+  //   },
+  //   onError: (error: Error) => {
+  //     console.error("Error checking username:", error)
+  //   },
+  // })
 
-  useEffect(() => {
-    const validateUsername = async () => {
-      if (username) {
-        usernameCheckMutation.mutate(username)
-      }
-    }
+  // useEffect(() => {
+  //   const validateUsername = async () => {
+  //     if (username) {
+  //       usernameCheckMutation.mutate(username)
+  //     }
+  //   }
 
-    const debounceTimeout = setTimeout(() => {
-      validateUsername()
-    }, 1000)
+  //   const debounceTimeout = setTimeout(() => {
+  //     validateUsername()
+  //   }, 1000)
 
-    return () => {
-      clearTimeout(debounceTimeout)
-    }
-  }, [username, setError, clearErrors, usernameCheckMutation])
+  //   return () => {
+  //     clearTimeout(debounceTimeout)
+  //   }
+  // }, [username, setError, clearErrors, usernameCheckMutation])
 
   const onSubmit = handleSubmit((data) => {
     registerMutation.mutate(data)

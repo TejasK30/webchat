@@ -2,14 +2,17 @@ import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { loginuser } from "../client/apiClient"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { LoginFormData, userInfo } from "../utils/types"
 import { useUserStore } from "../store/userStore"
+import useUserContext from "../hooks/useUserContext"
 
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
+
+  const { isLoggedin } = useUserContext()
 
   const { setUser } = useUserStore()
 
@@ -44,6 +47,16 @@ const Login = () => {
   const onSubmit = handleSubmit((data: LoginFormData) => {
     mutation.mutate(data)
   })
+
+  useEffect(() => {
+    const checkUserloggedIn = async () => {
+      if (isLoggedin) {
+        navigate("/")
+      }
+    }
+
+    checkUserloggedIn()
+  }, [isLoggedin, navigate])
 
   return (
     <>
@@ -112,7 +125,7 @@ const Login = () => {
 
         <div className="mt-4 text-sm">
           Already have an account?{" "}
-          <Link className="text-blue-600" to={"/"}>
+          <Link className="text-blue-600" to={"/register"}>
             Register here
           </Link>
         </div>

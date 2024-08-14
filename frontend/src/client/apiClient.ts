@@ -1,23 +1,22 @@
-import { useCallback } from 'react'
-import { RegisterFormData, LoginFormData } from '../utils/types'
-import { MessageType } from "../utils/types"
+import { FriendDoc } from "../store/friendStore"
+import { LoginFormData, RegisterFormData } from "../utils/types"
 
 const url = import.meta.env.VITE_API_BASE_URL
 
-export const checkUsername = async (username: string) => {
-  const response = await fetch(`${url}/api/users/check-username`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({username}),
-  })
+// export const checkUsername = async (username: string) => {
+//   const response = await fetch(`${url}/api/users/check-username`, {
+//     method: "POST",
+//     credentials: "include",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({username}),
+//   })
 
-  const data = await response.json()
+//   const data = await response.json()
 
-  return data.exists
-}
+//   return data.exists
+// }
 
 export const registeruser = async (data: RegisterFormData) => {
   const response = await fetch(`${url}/api/users/register`, {
@@ -50,15 +49,25 @@ export const loginuser = async (data: LoginFormData) => {
   const userData = await response.json()
 
   return userData
-
 }
 
-export const validateUser = async() => {
+export const validateUser = async () => {
   const response = await fetch(`${url}/api/users/verify-user`, {
     credentials: "include",
   })
   if (!response.ok) {
     throw new Error("token invalid")
   }
+
   return response.json()
+}
+
+export const fetchFriends = async (userId: string): Promise<FriendDoc[]> => {
+  try {
+    const response = await fetch(`${url}/api/users/fetchfriends/${userId}`)
+    return response.json()
+  } catch (error) {
+    console.error("Error fetching friends:", error)
+    throw error
+  }
 }
