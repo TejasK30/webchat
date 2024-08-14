@@ -33,18 +33,11 @@ app.use("/api/users", userRoute)
 io.on("connection", (socket) => {
   console.log("Socket connected: ", socket.id)
 
-  socket.on("send-message", async(msg) => {
-
-    const message = new MessgaeModel({
-      senderId: msg.senderId,
-      sender: msg.email,
-      receiverId: msg.receiverId,
-      receiver: msg.to,
-      text: msg.text,
-    })
+  socket.on("send-message", async (msg) => {
+    
+    const message = new MessgaeModel(msg)
 
     await message.save()
-
   })
 })
 

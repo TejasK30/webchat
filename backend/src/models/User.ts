@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
 const userSchema = new Schema({
   username: {
@@ -44,6 +44,6 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-const UserModel = model("UserModel", userSchema)
+const UserModel = model("User", userSchema)
 
 export default UserModel

@@ -1,7 +1,9 @@
-import { NextFunction, Request, Response } from "express"
-import { z } from "zod"
 import bcrypt from "bcrypt"
-import jwt, { decode, JwtPayload } from "jsonwebtoken"
+import { NextFunction, Request, Response } from "express"
+import jwt, { JwtPayload } from "jsonwebtoken"
+import { ObjectId } from "mongodb"
+import { z } from "zod"
+import Friends from "../models/Friends"
 import UserModel from "../models/User"
 
 declare global {
@@ -22,27 +24,27 @@ const loginSchema = z.object({
   password: z.string(),
 })
 
-export const checkUsernameController = async (req: Request, res: Response) => {
-  const { username } = req.body
+// export const checkUsernameController = async (req: Request, res: Response) => {
+//   const { username } = req.body
 
-  try {
-    const usernameExists = await UserModel.findOne({
-      username: username,
-    })
+//   try {
+//     const usernameExists = await UserModel.findOne({
+//       username: username,
+//     })
 
-    if (usernameExists) {
-      return res
-        .status(400)
-        .json({ message: "User already exists", exists: true })
-    }
+//     if (usernameExists) {
+//       return res
+//         .status(400)
+//         .json({ message: "User already exists", exists: true })
+//     }
 
-    return res
-      .status(400)
-      .json({ message: "username available", exists: false })
-  } catch (error) {
-    res.status(500).json({ message: "Internal server error" })
-  }
-}
+//     return res
+//       .status(400)
+//       .json({ message: "username available", exists: false })
+//   } catch (error) {
+//     res.status(500).json({ message: "Internal server error" })
+//   }
+// }
 
 export const registerController = async (req: Request, res: Response) => {
   registerSchema.safeParse(req.body)
@@ -136,9 +138,18 @@ export const validateUserController = (
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string)
 
     req.userId = (decoded as JwtPayload).userId
-
-    next()
   } catch (error) {
     return res.status(401).json({ message: "unauthorized" })
   }
+}
+
+export const fetchFriendsForUser = async (req: Request, res: Response) => {
+  const userId = new ObjectId(req.params.userId)
+
+  const friends = await Friends.find({ userId: userId }).populate(
+    "friends",
+    "username email"
+  )
+
+  return res.status(200).json(friends)
 }
