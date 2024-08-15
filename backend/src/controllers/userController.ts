@@ -1,18 +1,10 @@
 import bcrypt from "bcrypt"
 import { NextFunction, Request, Response } from "express"
 import jwt, { JwtPayload } from "jsonwebtoken"
-import { ObjectId } from "mongodb"
+import { ObjectId, TopologyDescriptionChangedEvent } from "mongodb"
 import { z } from "zod"
 import Friends from "../models/Friends"
 import UserModel from "../models/User"
-
-declare global {
-  namespace Express {
-    interface Request {
-      userId: string
-    }
-  }
-}
 
 const registerSchema = z.object({
   username: z.string(),

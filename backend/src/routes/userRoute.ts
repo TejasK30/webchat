@@ -1,5 +1,5 @@
-import { registerController, loginController, validateUserController, fetchFriendsForUser } from "../controllers/userController"
 import { Router } from "express"
+import { fetchFriendsForUser, loginController, registerController, validateUserController } from "../controllers/userController"
 const router = Router()
 
 router.post("/register", registerController) 

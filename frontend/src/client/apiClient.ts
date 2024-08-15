@@ -71,3 +71,17 @@ export const fetchFriends = async (userId: string): Promise<FriendDoc[]> => {
     throw error
   }
 }
+
+export const fetchClickedUser = async (userId: string) => {
+  try {
+    const response = await fetch(`${url}/api/messages/clicked-user/getMessages/${userId}`,{
+      credentials: "include"
+    })
+    const data = await response.json()
+
+    console.log(data)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}

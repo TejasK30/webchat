@@ -8,18 +8,22 @@ const MessageSchema = new Schema({
   senderId: {
     type: String,
     required: true,
+    ref: "User"
   },
   sender: {
     type: String,
     required: true,
+    ref: "User"
   },
   receiverId: {
     type: String,
     required: true,
+    ref: "User"
   },
   receiver: {
     type: String,
     required: true,
+    ref: "User"
   },
   timestamp: {
     type: Date,
@@ -27,6 +31,6 @@ const MessageSchema = new Schema({
   }
 })
 
-const MessgaeModel = model('Message', MessageSchema)
+const MessageModel = model('Message', MessageSchema)
 
-export default MessgaeModel
+export default MessageModel
