@@ -23,10 +23,12 @@ export const fetchClickUsersDetails = async (req: Request, res: Response) => {
     }
 
     const messages = await MessageModel.find({
-      senderId: senderId,
-      receiverId: receiverId,
+      $or: [
+        { senderId: senderId, receiverId: receiverId },
+        { senderId: receiverId, receiverId: senderId }
+      ]
     }).sort({ timestamp: 1 })
-
+    
     console.log(messages)
 
     res.status(200).json({
