@@ -1,14 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-
-interface MessageType  {
-  text: string
-  sender: string
-  senderId: string
-  receiver: string
-  receiverId: string
-  timestamp: Date
-}
+import { MessageType } from "../utils/types"
 
 interface MessageState {
   selectedUser: { id: string; username: string } | null
@@ -22,11 +14,15 @@ export const useMessageStore = create<MessageState>()(
     (set) => ({
       selectedUser: null,
       messages: [],
-      setSelectedUser: (userId, username) => set({ selectedUser: {id: userId, username}}),
-      setMessages: (messages) => set({messages})
+      setSelectedUser: (userId, username) =>
+        set({ selectedUser: { id: userId, username } }),
+      setMessages: (messages) =>
+        set((state) => ({
+          messages: Array.isArray(messages) ? messages : state.messages,
+        })),
     }),
     {
-      name: 'message-storage',
+      name: "message-storage",
     }
   )
 )

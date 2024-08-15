@@ -14,24 +14,17 @@ export interface props {
   children: React.ReactNode
 }
 
-export interface MessageTypes {
-  text: string
-  sender: string
-  receiver: string
-  timestamp: Date
-}
-
 export interface userInfo {
   userId: string
   username: string
   email: string
 }
 
-export interface MessageType {
-  senderId: string
+export interface MessageData {
   sender: string
-  receiver: string
-  receiverId: string
+  senderId: string
+  receiver: string | undefined
+  receiverId: string | undefined
   text: string
 }
 
@@ -57,4 +50,13 @@ export interface Friend {
 
 export interface FriendsResponse {
   friends: Friend[]
+}
+
+export interface MessageType  {
+  text: string
+  sender: string
+  senderId: string
+  receiver: string
+  receiverId: string
+  timestamp: Date
 }

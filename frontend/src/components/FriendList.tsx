@@ -3,10 +3,12 @@ import React, { useEffect } from "react"
 import { fetchClickedUser, fetchFriends } from "../client/apiClient"
 import { useFriendStore } from "../store/friendStore"
 import { useUserStore } from "../store/userStore"
+import { useMessageStore } from "../store/messageStore"
 
 const FriendsList: React.FC = () => {
   const { userId } = useUserStore()
   const { friends, setFriends } = useFriendStore()
+  const { setMessages, setSelectedUser } = useMessageStore()
 
   useEffect(() => {
     const loadFriends = async () => {
@@ -14,10 +16,9 @@ const FriendsList: React.FC = () => {
         const fetchedFriends = await fetchFriends(userId)
         setFriends(fetchedFriends)
       } catch (error) {
-        console.log("error", error)
+        console.error("Error fetching friends:", error)
       }
     }
-
     loadFriends()
   }, [setFriends, userId])
 
@@ -25,35 +26,35 @@ const FriendsList: React.FC = () => {
     mutationFn: fetchClickedUser,
     mutationKey: ["fetchClickedUser"],
     onSuccess: (data) => {
-      console.log("Fetched user:", data)
+      setMessages(data)
     },
     onError: (error) => {
       console.error("Error fetching user:", error)
     },
   })
 
-  const handleUserClick = (userId: string) => {
+  const handleUserClick = (userId: string, username: string) => {
     fetchUserMutation.mutate(userId)
+    setSelectedUser(userId, username)
   }
+
   return (
-    <>
-      <ul className="flex">
-        {friends.map((friend) => (
-          <li key={friend._id}>
-            {friend.friends.map((f, i) => (
-              <div
-                key={i}
-                className="cursor-pointer p-1 border-b-2 border-blue-700 hover:bg-green-200 w-[100%]"
-                onClick={() => handleUserClick(f._id)}
-              >
-                <h3>{f.username}</h3>
-                <h3>{f.email}</h3>
-              </div>
-            ))}
-          </li>
-        ))}
-      </ul>
-    </>
+    <ul className="flex flex-col">
+      {friends.map((friend) => (
+        <li key={friend._id}>
+          {friend.friends.map((f) => (
+            <div
+              key={f._id}
+              className="cursor-pointer p-1 border-b-2 border-blue-700 hover:bg-green-200 w-full"
+              onClick={() => handleUserClick(f._id, f.username)}
+            >
+              <h3>{f.username}</h3>
+              <h3>{f.email}</h3>
+            </div>
+          ))}
+        </li>
+      ))}
+    </ul>
   )
 }
 
