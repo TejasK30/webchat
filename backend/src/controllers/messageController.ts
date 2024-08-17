@@ -9,7 +9,7 @@ export const fetchClickUsersDetails = async (req: Request, res: Response) => {
 
   const token = req.cookies["auth_token"]
 
-  const senderId = await requestUserId(token)
+  const senderId = await requestUserId(token)  
 
   try {
     const userDetails = await UserModel.findOne({
