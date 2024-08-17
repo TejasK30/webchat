@@ -1,47 +1,78 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-import { IoSend } from "react-icons/io5"
-import { useNavigate } from "react-router-dom"
-import useSocket from "../hooks/useSocket"
-import useUserContext from "../hooks/useUserContext"
-import { useMessageStore } from "../store/messageStore"
-import { useUserStore } from "../store/userStore"
-import {  MessageType } from "../utils/types"
-import FriendsList from "./FriendList"
-import Navbar from "./Navbar"
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import { IoSend } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import useSocket from "../hooks/useSocket";
+import useUserContext from "../hooks/useUserContext";
+import { useMessageStore } from "../store/messageStore";
+import { useUserStore } from "../store/userStore";
+import { MessageType } from "../utils/types";
+import FriendsList from "./FriendList";
+import Navbar from "./Navbar";
+import { fetchClickedUser } from "../client/apiClient";
 
 const Chat = () => {
-  const { isLoggedin } = useUserContext()
-  const [textMessage, setTextMessage] = useState<string>("")
-  const { userId, username } = useUserStore()
-  const { selectedUser, messages, addMessage } = useMessageStore()
-  const fromRef = useRef<HTMLFormElement>(null)
-  const socket = useSocket()
-  const navigate = useNavigate()
+  const { isLoggedin } = useUserContext();
+  const [textMessage, setTextMessage] = useState<string>("");
+  const { userId, username } = useUserStore();
+  const { selectedUser, messages, addMessage, setMessages } = useMessageStore();
+  const formRef = useRef<HTMLFormElement>(null);
+  const socket = useSocket();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLoggedin) {
-      navigate("/login")
+      navigate("/login");
     }
-  }, [isLoggedin, navigate])
+  }, [isLoggedin, navigate]);
+
+  useEffect(() => {
+    if (selectedUser) {
+      const fetchUserMessages = async (userId: string) => {
+        try {
+          const messages = await fetchClickedUser(userId);
+          setMessages(messages);
+        } catch (error) {
+          console.error("Error fetching user messages:", error);
+        }
+      };
+
+      fetchUserMessages(selectedUser.id);
+
+      socket.emit("join-room", selectedUser.id);
+
+      const handleReceiveMessage = (message: MessageType) => {
+        if (message.receiverId === userId || message.senderId === userId) {
+          addMessage(message);
+        }
+      };
+
+      socket.on("receive-message", handleReceiveMessage);
+
+      // Cleanup
+      return () => {
+        socket.off("receive-message", handleReceiveMessage);
+      };
+    }
+  }, [selectedUser, addMessage, socket, userId, setMessages]);
 
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
+      e.preventDefault();
       const newMessage: MessageType = {
         sender: username,
         senderId: userId,
         receiver: selectedUser?.username || "",
         receiverId: selectedUser?.id || "",
         text: textMessage,
-        timestamp: new Date()
-      }
-      socket.emit("send-message", newMessage)
-      addMessage(newMessage)
-      setTextMessage("")
-      fromRef?.current?.reset()
+        timestamp: new Date(),
+      };
+      socket.emit("send-message", newMessage);
+      addMessage(newMessage);
+      setTextMessage("");
+      formRef.current?.reset();
     },
     [username, userId, selectedUser?.username, selectedUser?.id, textMessage, socket, addMessage]
-  )
+  );
 
   return (
     <div className="flex flex-col h-screen">
@@ -85,7 +116,7 @@ const Chat = () => {
               <p className="text-center">No messages to display</p>
             )}
           </div>
-          <form ref={fromRef} onSubmit={sendMessage}>
+          <form ref={formRef} onSubmit={sendMessage}>
             <div className="flex items-center justify-center w-full bg-blue-200 mb-1 gap-1">
               <input
                 type="text"
@@ -106,7 +137,7 @@ const Chat = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Chat
+export default Chat;

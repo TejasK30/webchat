@@ -1,5 +1,8 @@
 import { useState } from "react"
 import { useUserStore } from "../store/userStore"
+import { Link } from "react-router-dom"
+
+const navLinks = ["Profile", "Settings", "Sign out"]
 
 export default function Example() {
   const { username } = useUserStore()
@@ -26,14 +29,15 @@ export default function Example() {
               </button>
               {profileOpen && (
                 <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  {["Your Profile", "Settings", "Sign out"].map((item) => (
-                    <a
+                  {navLinks.map((item) => (
+                    <Link to={`/${item.toLocaleLowerCase()}`}>
+                    <div
                       key={item}
-                      href="#"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300"
                     >
                       {item}
-                    </a>
+                    </div>
+                    </Link>
                   ))}
                 </div>
               )}

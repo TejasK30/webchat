@@ -1,4 +1,3 @@
-import { useMutation } from "@tanstack/react-query"
 import React, { useEffect } from "react"
 import { fetchClickedUser, fetchFriends } from "../client/apiClient"
 import { useFriendStore } from "../store/friendStore"
@@ -22,20 +21,18 @@ const FriendsList: React.FC = () => {
     loadFriends()
   }, [setFriends, userId])
 
-  const fetchUserMutation = useMutation({
-    mutationFn: fetchClickedUser,
-    mutationKey: ["fetchClickedUser"],
-    onSuccess: (data) => {
-      setMessages(data)
-    },
-    onError: (error) => {
-      console.error("Error fetching user:", error)
-    },
-  })
+  const fetchUserMessages = async (userId: string) => {
+    try {
+      const messages = await fetchClickedUser(userId)
+      setMessages(messages)
+    } catch (error) {
+      console.error("Error fetching user messages:", error)
+    }
+  }
 
-  const handleUserClick = (userId: string, username: string) => {
-    fetchUserMutation.mutate(userId)
+  const handleUserClick = async (userId: string, username: string) => {
     setSelectedUser(userId, username)
+    await fetchUserMessages(userId)
   }
 
   return (
