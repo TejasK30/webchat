@@ -20,14 +20,6 @@ export interface userInfo {
   email: string
 }
 
-export interface MessageData {
-  sender: string
-  senderId: string
-  receiver: string | undefined
-  receiverId: string | undefined
-  text: string
-}
-
 export type User = {
   _id: string
   username: string

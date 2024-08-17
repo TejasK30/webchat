@@ -11,8 +11,6 @@ export const fetchClickUsersDetails = async (req: Request, res: Response) => {
 
   const senderId = await requestUserId(token)
 
-  console.log(`sender id: ${senderId} receiver id: ${receiverId}`)
-
   try {
     const userDetails = await UserModel.findOne({
       _id: receiverId,
@@ -29,8 +27,6 @@ export const fetchClickUsersDetails = async (req: Request, res: Response) => {
       ]
     }).sort({ timestamp: 1 })
     
-    console.log(messages)
-
     res.status(200).json({
       messages,
     })

@@ -5,14 +5,14 @@ import useSocket from "../hooks/useSocket"
 import useUserContext from "../hooks/useUserContext"
 import { useMessageStore } from "../store/messageStore"
 import { useUserStore } from "../store/userStore"
-import { MessageData } from "../utils/types"
+import {  MessageType } from "../utils/types"
 import FriendsList from "./FriendList"
 
 const Chat = () => {
   const { isLoggedin } = useUserContext()
   const [textMessage, setTextMessage] = useState<string>("")
   const { userId, username } = useUserStore()
-  const { selectedUser, messages } = useMessageStore()
+  const { selectedUser, messages, addMessage } = useMessageStore()
   const fromRef = useRef<HTMLFormElement>(null)
   const socket = useSocket()
   const navigate = useNavigate()
@@ -23,25 +23,23 @@ const Chat = () => {
     }
   }, [isLoggedin, navigate])
 
-  useEffect(() => {
-    console.log(Array.isArray(messages))
-  }, [messages])
-
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      const newMessage: MessageData = {
+      const newMessage: MessageType = {
         sender: username,
         senderId: userId,
         receiver: selectedUser?.username || "",
         receiverId: selectedUser?.id || "",
         text: textMessage,
+        timestamp: new Date()
       }
       socket.emit("send-message", newMessage)
+      addMessage(newMessage)
       setTextMessage("")
       fromRef?.current?.reset()
     },
-    [username, userId, selectedUser, textMessage, socket]
+    [username, userId, selectedUser?.username, selectedUser?.id, textMessage, socket, addMessage]
   )
 
   return (

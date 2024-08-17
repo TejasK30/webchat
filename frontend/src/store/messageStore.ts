@@ -7,6 +7,7 @@ interface MessageState {
   messages: MessageType[]
   setSelectedUser: (userId: string, username: string) => void
   setMessages: (messages: MessageType[]) => void
+  addMessage: (message: MessageType) => void
 }
 
 export const useMessageStore = create<MessageState>()(
@@ -19,6 +20,10 @@ export const useMessageStore = create<MessageState>()(
       setMessages: (messages) =>
         set((state) => ({
           messages: Array.isArray(messages) ? messages : state.messages,
+        })),
+      addMessage: (message: MessageType) =>
+        set((state) => ({
+          messages: [...state.messages, message],
         })),
     }),
     {

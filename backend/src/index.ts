@@ -21,7 +21,7 @@ declare global {
       userId: string
     }
   }
-} 
+}
 
 io.listen(5001)
 
@@ -46,7 +46,8 @@ io.on("connection", (socket) => {
   socket.on("send-message", async (msg) => {
     console.log(msg)
 
-    // await message.save()
+    const message = new MessageModel(msg)
+    await message.save()
   })
 })
 
