@@ -8,7 +8,7 @@ interface Friends {
   updatedAt: Date
 }
 
-const friendsSchema = new Schema({
+const friendsSchema = new Schema<Friends>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
