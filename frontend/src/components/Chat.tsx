@@ -7,6 +7,7 @@ import { useMessageStore } from "../store/messageStore"
 import { useUserStore } from "../store/userStore"
 import {  MessageType } from "../utils/types"
 import FriendsList from "./FriendList"
+import Navbar from "./Navbar"
 
 const Chat = () => {
   const { isLoggedin } = useUserContext()
@@ -44,6 +45,7 @@ const Chat = () => {
 
   return (
     <div className="flex flex-col h-screen">
+      <Navbar />
       <div className="flex h-full">
         <div className="flex flex-col">
           <h3 className="flex w-full font-bold text-2xl text-center bg-green-500 py-2">
