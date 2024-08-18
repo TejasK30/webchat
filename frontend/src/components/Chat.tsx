@@ -118,19 +118,30 @@ const Chat = () => {
               <h2 className="text-sm text-green-300">Online</h2>
             </div>
           </div>
-          <div className="flex flex-col space-y-4 p-4 flex-grow overflow-y-auto">
+          <div className="flex flex-col space-y-2 p-4 flex-grow overflow-y-auto">
             {Array.isArray(messages) && messages.length > 0 ? (
               messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`p-2 rounded-lg max-w-[50%] ${
-                    msg.senderId === userId
-                      ? "self-end bg-blue-100"
-                      : "self-start bg-gray-100"
-                  }`}
-                >
-                  {msg.text}
-                </div>
+                <>
+                  <div
+                    key={index}
+                    className={`p-2 rounded-lg max-w-[50%] ${
+                      msg.senderId === userId
+                        ? "self-end bg-blue-100"
+                        : "self-start bg-gray-100"
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                  <h3
+                    className={`max-w-[50%] text-sm ${
+                      msg.senderId === userId
+                        ? "self-end"
+                        : "self-start"
+                    }`}
+                  >
+                    {new Date(msg.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                  </h3>
+                </>
               ))
             ) : (
               <p className="text-center">No messages to display</p>
