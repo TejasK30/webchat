@@ -63,6 +63,8 @@ export const validateUser = async () => {
 }
 
 export const fetchFriends = async (userId: string): Promise<FriendDoc[]> => {
+  console.log(userId);
+  
   try {
     const response = await fetch(`${url}/api/users/fetchfriends/${userId}`)
     return response.json()

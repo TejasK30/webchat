@@ -5,13 +5,12 @@ import MessageModel from "../models/Message"
 import { requestUserId } from "../utils/helpers"
 
 export const fetchClickUsersDetails = async (req: Request, res: Response) => {
-  const receiverId = new ObjectId(req.params.receiverId)
-
-  const token = req.cookies["auth_token"]
-
-  const senderId = await requestUserId(token)  
-
   try {
+    const receiverId = new ObjectId(req.params.receiverId)
+    const token = req.cookies["auth_token"]
+    console.log(token)
+
+    const senderId = await requestUserId(token)
     const userDetails = await UserModel.findOne({
       _id: receiverId,
     })
@@ -23,10 +22,10 @@ export const fetchClickUsersDetails = async (req: Request, res: Response) => {
     const messages = await MessageModel.find({
       $or: [
         { senderId: senderId, receiverId: receiverId },
-        { senderId: receiverId, receiverId: senderId }
-      ]
+        { senderId: receiverId, receiverId: senderId },
+      ],
     }).sort({ timestamp: 1 })
-    
+
     res.status(200).json({
       messages,
     })
