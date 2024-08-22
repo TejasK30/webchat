@@ -148,7 +148,7 @@ const Chat = () => {
             )}
             <div ref={messagesEndRef} />
           </div>
-          <form ref={formRef} onSubmit={sendMessage}>
+          <form className="sticky" ref={formRef} onSubmit={sendMessage}>
             <div className="flex items-center justify-center w-full bg-blue-200 mb-1 gap-1">
               <input
                 type="text"

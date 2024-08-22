@@ -3,12 +3,12 @@ import { Request, Response } from "express"
 import UserModel from "../models/User"
 import MessageModel from "../models/Message"
 import { requestUserId } from "../utils/helpers"
+import { getMessagesGroupedByDate } from "../utils/aggregate"
 
 export const fetchClickUsersDetails = async (req: Request, res: Response) => {
   try {
     const receiverId = new ObjectId(req.params.receiverId)
     const token = req.cookies["auth_token"]
-    console.log(token)
 
     const senderId = await requestUserId(token)
     const userDetails = await UserModel.findOne({
@@ -18,6 +18,12 @@ export const fetchClickUsersDetails = async (req: Request, res: Response) => {
     if (!userDetails) {
       return res.status(404).json({ message: "User not found" })
     }
+
+    const groupedMessages = await getMessagesGroupedByDate(
+      senderId,
+      receiverId.toString()
+    )
+    console.log(groupedMessages)
 
     const messages = await MessageModel.find({
       $or: [
