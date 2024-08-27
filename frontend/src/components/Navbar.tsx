@@ -8,6 +8,7 @@ const navLinks = ["Profile", "Settings", "Sign out"]
 
 export default function Example() {
   const { username } = useUserStore()
+  const { setUser } = useUserStore()
 
   const [profileOpen, setProfileOpen] = useState(false)
 
@@ -21,6 +22,11 @@ export default function Example() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["validateUser"] })
       console.log("sucess logout")
+      setUser({
+        userId: '',
+        username: '',
+        email: ''
+      })
       navigate("/login")
     },
     onError: () => {

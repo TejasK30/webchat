@@ -40,7 +40,6 @@ const Login = () => {
     mutation.mutate(data)
   })
 
-
   return (
     <div className="flex justify-center items-center flex-col h-screen">
       <form

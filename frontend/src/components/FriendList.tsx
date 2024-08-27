@@ -10,15 +10,17 @@ const FriendsList: React.FC = () => {
   const { setMessages, setSelectedUser } = useMessageStore()
 
   useEffect(() => {
-    const loadFriends = async () => {
-      try {
-        const fetchedFriends = await fetchFriends(userId)
-        setFriends(fetchedFriends)
-      } catch (error) {
-        console.error("Error fetching friends:", error)
+    if(userId){
+      const loadFriends = async () => {
+        try {
+          const fetchedFriends = await fetchFriends(userId)
+          setFriends(fetchedFriends)
+        } catch (error) {
+          console.error("Error fetching friends:", error)
+        }
       }
+      loadFriends()
     }
-    loadFriends()
   }, [setFriends, userId])
 
   const fetchUserMessages = async (userId: string) => {
