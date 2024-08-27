@@ -1,16 +1,14 @@
 import { useMutation } from "@tanstack/react-query"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { loginuser } from "../client/apiClient"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
-import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { LoginFormData, userInfo } from "../utils/types"
+import { loginuser } from "../client/apiClient"
 import { useUserStore } from "../store/userStore"
-import useUserContext from "../hooks/useUserContext"
+import { LoginFormData, userInfo } from "../utils/types"
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const { isLoggedin } = useUserContext()
   const { setUser } = useUserStore()
   const navigate = useNavigate()
 
@@ -25,7 +23,7 @@ const Login = () => {
   const mutation = useMutation({
     mutationFn: loginuser,
     onSuccess: (userData: userInfo) => {
-      console.log("success")
+      console.log("login success")
       setUser({
         userId: userData.userId,
         username: userData.username,
@@ -42,11 +40,6 @@ const Login = () => {
     mutation.mutate(data)
   })
 
-  useEffect(() => {
-    if (isLoggedin) {
-      navigate("/")
-    }
-  }, [isLoggedin, navigate])
 
   return (
     <div className="flex justify-center items-center flex-col h-screen">

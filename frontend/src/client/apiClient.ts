@@ -63,8 +63,8 @@ export const validateUser = async () => {
 }
 
 export const fetchFriends = async (userId: string): Promise<FriendDoc[]> => {
-  console.log(userId);
-  
+  console.log(userId)
+
   try {
     const response = await fetch(`${url}/api/users/fetchfriends/${userId}`)
     return response.json()
@@ -88,5 +88,21 @@ export const fetchClickedUser = async (userId: string) => {
     return data.messages
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const logout = async () => {
+  try {
+    const response = await fetch(`${url}/api/users/logout`, {
+      method: "POST",
+      credentials: "include",
+    })
+
+    if (!response.ok) {
+      throw new Error(`Logout failed with status: ${response.status}`)
+    }
+  } catch (error) {
+    console.error("Error during logout:", error)
+    throw error
   }
 }

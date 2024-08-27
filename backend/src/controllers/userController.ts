@@ -122,9 +122,6 @@ export const validateUserController = (
 ) => {
   const token = req.cookies["auth_token"]
 
-  console.log(token);
-  
-
   if (!token) {
     return res.status(401).json({ message: "unauthorized" })
   }
@@ -147,4 +144,15 @@ export const fetchFriendsForUser = async (req: Request, res: Response) => {
   )
 
   return res.status(200).json(friends)
+}
+
+export const logoutController = async (req: Request, res: Response) => {
+  try {
+    return res
+      .clearCookie("auth_token", { sameSite: "none", secure: true })
+      .status(200)
+      .send("User logged out successfully!")
+  } catch (err) {
+    return res.status(500).json(err)
+  }
 }

@@ -1,17 +1,15 @@
-import React, { useEffect, useState, useCallback, useRef } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { IoSend } from "react-icons/io5"
-import { useNavigate } from "react-router-dom"
+import { fetchClickedUser } from "../client/apiClient"
 import useSocket from "../hooks/useSocket"
-import useUserContext from "../hooks/useUserContext"
 import { useMessageStore } from "../store/messageStore"
 import { useUserStore } from "../store/userStore"
 import { MessageType } from "../utils/types"
 import FriendsList from "./FriendList"
 import Navbar from "./Navbar"
-import { fetchClickedUser } from "../client/apiClient"
 
 const Chat = () => {
-  const { isLoggedin } = useUserContext()
+
   const { userId, username } = useUserStore()
   const { selectedUser, messages, addMessage, setMessages } = useMessageStore()
 
@@ -20,13 +18,6 @@ const Chat = () => {
   const formRef = useRef<HTMLFormElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const socket = useSocket()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (!isLoggedin) {
-      navigate("/login")
-    }
-  }, [isLoggedin, navigate])
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -134,12 +125,13 @@ const Chat = () => {
                   </div>
                   <h3
                     className={`max-w-[50%] text-sm ${
-                      msg.senderId === userId
-                        ? "self-end"
-                        : "self-start"
+                      msg.senderId === userId ? "self-end" : "self-start"
                     }`}
                   >
-                    {new Date(msg.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(msg.timestamp).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </h3>
                 </>
               ))

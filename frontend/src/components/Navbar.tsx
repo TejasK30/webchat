@@ -1,6 +1,8 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { logout } from "../client/apiClient"
 import { useUserStore } from "../store/userStore"
-import { Link } from "react-router-dom"
 
 const navLinks = ["Profile", "Settings", "Sign out"]
 
@@ -8,6 +10,27 @@ export default function Example() {
   const { username } = useUserStore()
 
   const [profileOpen, setProfileOpen] = useState(false)
+
+  const navigate = useNavigate()
+
+  const queryClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationKey: ["logout"],
+    mutationFn: logout,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["validateUser"] })
+      console.log("sucess logout")
+      navigate("/login")
+    },
+    onError: () => {
+      console.log("error in logout")
+    },
+  })
+
+  const handleClick = async () => {
+    mutation.mutate()
+  }
 
   return (
     <nav className="bg-gray-100">
@@ -29,16 +52,25 @@ export default function Example() {
               </button>
               {profileOpen && (
                 <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  {navLinks.map((item) => (
-                    <Link to={`/${item.toLocaleLowerCase()}`}>
-                    <div
-                      key={item}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300"
-                    >
-                      {item}
-                    </div>
-                    </Link>
-                  ))}
+                  {navLinks.map((item) =>
+                    item === "Sign out" ? (
+                      <div
+                        key={item}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 cursor-pointer"
+                        onClick={handleClick}
+                      >
+                        {item}
+                      </div>
+                    ) : (
+                      <Link
+                        key={item}
+                        to={`/${item.toLowerCase().replace(" ", "-")}`}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300"
+                      >
+                        {item}
+                      </Link>
+                    )
+                  )}
                 </div>
               )}
             </div>
