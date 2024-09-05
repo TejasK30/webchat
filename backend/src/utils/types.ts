@@ -13,18 +13,3 @@ export interface FriendsResponse {
   createdAt: Date
   updatedAt: Date
 }
-
-export interface MessageType {
-  _id: string
-  senderId: string
-  sender: string
-  receiver: string
-  receiverId: string
-  text: string
-  timestamp: Date
-}
-
-export interface MessageResponse {
-  _id: string
-  messages: MessageType[]
-}

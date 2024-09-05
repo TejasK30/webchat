@@ -46,7 +46,7 @@ export interface FriendsResponse {
 
 
 export interface MessageType {
-  _id: string
+  _id?: string
   senderId: string
   sender: string
   receiver: string
@@ -57,5 +57,6 @@ export interface MessageType {
 
 export interface MessageResponse {
   _id: string
+  dateToFormat: Date
   messages: MessageType[]
 }

@@ -16,19 +16,20 @@ export const getMessagesGroupedByDate = async (
       },
       {
         $addFields: {
-          date: { $dateToString: { format: "%d-%m-%Y", date: "$timestamp" } },
+          date: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
         },
       },
       {
         $group: {
           _id: "$date",
+          dateToFormat: { $first: "$timestamp" },
           messages: {
             $push: {
               _id: "$_id",
               text: "$text",
               sender: "$sender",
               senderId: "$senderId",
-              receiver: "receiver",
+              receiver: "$receiver",
               receiverId: "$receiverId",
               timestamp: "$timestamp"
             },

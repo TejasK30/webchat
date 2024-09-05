@@ -18,9 +18,7 @@ export const useMessageStore = create<MessageState>()(
       setSelectedUser: (userId, username) =>
         set({ selectedUser: { id: userId, username } }),
 
-      setMessages: (messages) => {
-        set({ messages })
-      },
+      setMessages: (messages) => set({messages}),
 
       addMessage: (message: MessageType) => {
         const { selectedUser, messages } = get()
@@ -44,6 +42,7 @@ export const useMessageStore = create<MessageState>()(
         } else {
           const newMessageResponse: MessageResponse = {
             _id: selectedUser.id,
+            dateToFormat: new Date(),
             messages: [message],
           }
           set({ messages: [...messages, newMessageResponse] })

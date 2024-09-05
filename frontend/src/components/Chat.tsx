@@ -7,6 +7,7 @@ import { useUserStore } from "../store/userStore"
 import { MessageType } from "../utils/types"
 import FriendsList from "./FriendList"
 import Navbar from "./Navbar"
+import { formatDate } from "../utils/helpers"
 
 const Chat = () => {
   const { userId, username } = useUserStore()
@@ -37,12 +38,8 @@ const Chat = () => {
 
       fetchUserMessages(selectedUser.id)
       socket.emit("join-room", selectedUser.id)
-
       const handleReceiveMessage = (message: MessageType) => {
-        if (
-          message.receiverId === selectedUser.id ||
-          message.senderId === userId
-        ) {
+        if (message.receiverId === userId || message.senderId === userId) {
           addMessage(message)
         }
       }
@@ -59,7 +56,6 @@ const Chat = () => {
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       const newMessage: MessageType = {
-        _id: "",
         sender: username,
         senderId: userId,
         receiver: selectedUser?.username || "",
@@ -68,7 +64,6 @@ const Chat = () => {
         timestamp: new Date(),
       }
       socket.emit("send-message", newMessage)
-      addMessage(newMessage)
       setTextMessage("")
       formRef.current?.reset()
     },
@@ -79,7 +74,6 @@ const Chat = () => {
       selectedUser?.id,
       textMessage,
       socket,
-      addMessage,
     ]
   )
 
@@ -116,7 +110,10 @@ const Chat = () => {
             {Array.isArray(messages) && messages.length > 0 ? (
               messages.map((msg) => (
                 <>
-                  <div className="text-center bg-gray-500 p-1 rounded-md">{msg._id}</div>
+                  <div className="text-center bg-gray-500 p-1 rounded-md">
+                    {formatDate(new Date(msg.dateToFormat))}
+                  </div>
+
                   <div key={msg._id} className="flex flex-col space-y-2">
                     {msg.messages.map((message) => (
                       <div
