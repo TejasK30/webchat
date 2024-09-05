@@ -108,25 +108,37 @@ const Chat = () => {
           </div>
           <div className="flex flex-col space-y-2 p-4 flex-grow overflow-y-auto">
             {Array.isArray(messages) && messages.length > 0 ? (
-              messages.map((msg) => (
-                <>
-                  <div className="text-center bg-gray-500 p-1 rounded-md">
-                    {formatDate(new Date(msg.dateToFormat))}
-                  </div>
+              messages.map((msg, index) => {
+                const currentMessageDate = new Date(
+                  msg.dateToFormat
+                ).toDateString()
+                const previousMessageDate =
+                  index > 0
+                    ? new Date(messages[index - 1].dateToFormat).toDateString()
+                    : null
 
+                return (
                   <div key={msg._id} className="flex flex-col space-y-2">
+                    {currentMessageDate !== previousMessageDate && (
+                      <div className="text-center bg-gray-500 p-1 rounded-md">
+                        {formatDate(new Date(msg.dateToFormat))}
+                      </div>
+                    )}
+
                     {msg.messages.map((message) => (
-                      <div
-                        key={message._id}
-                        className={`p-2 rounded-lg max-w-[50%] ${
-                          message.senderId === userId
-                            ? "self-end bg-blue-100"
-                            : "self-start bg-gray-100"
-                        }`}
-                      >
-                        {message.text}
+                      <>
+                        <div
+                          key={message._id}
+                          className={`p-2 rounded-lg max-w-[50%] ${
+                            message.senderId === userId
+                              ? "self-end bg-blue-100"
+                              : "self-start bg-gray-100"
+                          }`}
+                        >
+                          {message.text}
+                        </div>
                         <h3
-                          className={`text-sm ${
+                          className={`text-xs ${
                             message.senderId === userId
                               ? "text-right"
                               : "text-left"
@@ -140,11 +152,11 @@ const Chat = () => {
                             }
                           )}
                         </h3>
-                      </div>
+                      </>
                     ))}
                   </div>
-                </>
-              ))
+                )
+              })
             ) : (
               <p className="text-center">No messages to display</p>
             )}
