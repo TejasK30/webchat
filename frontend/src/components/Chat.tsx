@@ -14,6 +14,7 @@ const Chat = () => {
   const { selectedUser, messages, addMessage, setMessages } = useMessageStore()
 
   const [textMessage, setTextMessage] = useState<string>("")
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
 
   const formRef = useRef<HTMLFormElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -21,9 +22,10 @@ const Chat = () => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+      messagesEndRef.current.scrollIntoView({ behavior: isInitialLoad ?  "auto": "smooth" })
     }
-  }, [messages])
+    setIsInitialLoad(false)
+  }, [isInitialLoad, messages])
 
   useEffect(() => {
     if (selectedUser) {
@@ -109,18 +111,15 @@ const Chat = () => {
           <div className="flex flex-col space-y-2 p-4 flex-grow overflow-y-auto">
             {Array.isArray(messages) && messages.length > 0 ? (
               messages.map((msg, index) => {
-                const currentMessageDate = new Date(
-                  msg.dateToFormat
-                ).toDateString()
-                const previousMessageDate =
-                  index > 0
+                const currentMessageDate = new Date(msg.dateToFormat).toDateString()
+                const previousMessageDate = index > 0
                     ? new Date(messages[index - 1].dateToFormat).toDateString()
                     : null
 
                 return (
                   <div key={msg._id} className="flex flex-col space-y-2">
                     {currentMessageDate !== previousMessageDate && (
-                      <div className="text-center bg-gray-500 p-1 rounded-md">
+                      <div className="text-center bg-blue-500 text-gray-100 rounded-md">
                         {formatDate(new Date(msg.dateToFormat))}
                       </div>
                     )}

@@ -6,7 +6,7 @@ import { useUserStore } from "../store/userStore"
 
 const navLinks = ["Profile", "Settings", "Sign out"]
 
-export default function Example() {
+export default function Navbar() {
   const { username } = useUserStore()
   const { setUser } = useUserStore()
 
@@ -39,7 +39,7 @@ export default function Example() {
   }
 
   return (
-    <nav className="bg-gray-100">
+    <nav className="bg-gray-300">
       <div className="max-w-7xl px-2 sm:px-6 lg:px-4">
         <div className="relative flex items-center justify-between">
           <div className="flex items-center">
@@ -86,3 +86,4 @@ export default function Example() {
     </nav>
   )
 }
+
