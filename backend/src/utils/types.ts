@@ -1,12 +1,5 @@
 import { Types } from "mongoose"
 
-export interface MessageType {
-  senderId: string
-  sender: string
-  receiver: string
-  receiverId: string
-  text: string
-}
 
 export interface FriendDetails {
   _id: Types.ObjectId
@@ -19,4 +12,19 @@ export interface FriendsResponse {
   friends: FriendDetails[]
   createdAt: Date
   updatedAt: Date
+}
+
+export interface MessageType {
+  _id: string
+  senderId: string
+  sender: string
+  receiver: string
+  receiverId: string
+  text: string
+  timestamp: Date
+}
+
+export interface MessageResponse {
+  _id: string
+  messages: MessageType[]
 }
