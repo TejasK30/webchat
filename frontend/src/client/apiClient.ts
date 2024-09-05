@@ -84,8 +84,7 @@ export const fetchClickedUser = async (userId: string) => {
     )
 
     const data = await response.json()
-
-    return data.messages
+    return data.groupedMessages
   } catch (error) {
     console.log(error)
   }

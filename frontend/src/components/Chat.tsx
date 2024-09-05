@@ -9,7 +9,6 @@ import FriendsList from "./FriendList"
 import Navbar from "./Navbar"
 
 const Chat = () => {
-
   const { userId, username } = useUserStore()
   const { selectedUser, messages, addMessage, setMessages } = useMessageStore()
 
@@ -40,7 +39,10 @@ const Chat = () => {
       socket.emit("join-room", selectedUser.id)
 
       const handleReceiveMessage = (message: MessageType) => {
-        if (message.receiverId === userId || message.senderId === userId) {
+        if (
+          message.receiverId === selectedUser.id ||
+          message.senderId === userId
+        ) {
           addMessage(message)
         }
       }
@@ -57,6 +59,7 @@ const Chat = () => {
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       const newMessage: MessageType = {
+        _id: "",
         sender: username,
         senderId: userId,
         receiver: selectedUser?.username || "",
@@ -111,28 +114,38 @@ const Chat = () => {
           </div>
           <div className="flex flex-col space-y-2 p-4 flex-grow overflow-y-auto">
             {Array.isArray(messages) && messages.length > 0 ? (
-              messages.map((msg, index) => (
+              messages.map((msg) => (
                 <>
-                  <div
-                    key={index}
-                    className={`p-2 rounded-lg max-w-[50%] ${
-                      msg.senderId === userId
-                        ? "self-end bg-blue-100"
-                        : "self-start bg-gray-100"
-                    }`}
-                  >
-                    {msg.text}
+                  <div className="text-center bg-gray-500 p-1 rounded-md">{msg._id}</div>
+                  <div key={msg._id} className="flex flex-col space-y-2">
+                    {msg.messages.map((message) => (
+                      <div
+                        key={message._id}
+                        className={`p-2 rounded-lg max-w-[50%] ${
+                          message.senderId === userId
+                            ? "self-end bg-blue-100"
+                            : "self-start bg-gray-100"
+                        }`}
+                      >
+                        {message.text}
+                        <h3
+                          className={`text-sm ${
+                            message.senderId === userId
+                              ? "text-right"
+                              : "text-left"
+                          }`}
+                        >
+                          {new Date(message.timestamp).toLocaleTimeString(
+                            "en-US",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </h3>
+                      </div>
+                    ))}
                   </div>
-                  <h3
-                    className={`max-w-[50%] text-sm ${
-                      msg.senderId === userId ? "self-end" : "self-start"
-                    }`}
-                  >
-                    {new Date(msg.timestamp).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </h3>
                 </>
               ))
             ) : (
@@ -140,8 +153,12 @@ const Chat = () => {
             )}
             <div ref={messagesEndRef} />
           </div>
-          <form className="sticky" ref={formRef} onSubmit={sendMessage}>
-            <div className="flex items-center justify-center w-full bg-blue-200 mb-1 gap-1">
+          <form
+            className="sticky bottom-0 bg-blue-200"
+            ref={formRef}
+            onSubmit={sendMessage}
+          >
+            <div className="flex items-center justify-center w-full mb-1 gap-1">
               <input
                 type="text"
                 placeholder="Enter message"
