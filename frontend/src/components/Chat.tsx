@@ -11,7 +11,7 @@ import { formatDate } from "../utils/helpers"
 
 const Chat = () => {
   const { userId, username } = useUserStore()
-  const { selectedUser, messages, addMessage, setMessages } = useMessageStore()
+  const { selectedUser, messages, addMessage, setMessages, setSelectedUser } = useMessageStore()
 
   const [textMessage, setTextMessage] = useState<string>("")
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -25,7 +25,10 @@ const Chat = () => {
       messagesEndRef.current.scrollIntoView({ behavior: isInitialLoad ?  "auto": "smooth" })
     }
     setIsInitialLoad(false)
-  }, [isInitialLoad, messages])
+    if(window.closed){
+      setSelectedUser('', '')
+    }
+  }, [isInitialLoad, messages, selectedUser, setSelectedUser])
 
   useEffect(() => {
     if (selectedUser) {
