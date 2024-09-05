@@ -23,18 +23,8 @@ export const fetchClickUsersDetails = async (req: Request, res: Response) => {
       senderId,
       receiverId.toString()
     )
-    console.log(groupedMessages)
 
-    const messages = await MessageModel.find({
-      $or: [
-        { senderId: senderId, receiverId: receiverId },
-        { senderId: receiverId, receiverId: senderId },
-      ],
-    }).sort({ timestamp: 1 })
-
-    res.status(200).json({
-      messages,
-    })
+    return res.status(200).json({ groupedMessages })
   } catch (error) {
     console.log(error)
   }

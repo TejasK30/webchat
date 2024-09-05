@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import Message from "../models/Message"
 
 export const getMessagesGroupedByDate = async (
@@ -6,8 +5,6 @@ export const getMessagesGroupedByDate = async (
   receiverId: string
 ) => {
   try {
-    const senderObjectId = new mongoose.Types.ObjectId(receiverId)
-    const receiverObjectId = new mongoose.Types.ObjectId(receiverId)
     const messages = await Message.aggregate([
       {
         $match: {
@@ -19,7 +16,7 @@ export const getMessagesGroupedByDate = async (
       },
       {
         $addFields: {
-          date: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+          date: { $dateToString: { format: "%d-%m-%Y", date: "$timestamp" } },
         },
       },
       {
@@ -29,9 +26,11 @@ export const getMessagesGroupedByDate = async (
             $push: {
               _id: "$_id",
               text: "$text",
+              sender: "$sender",
               senderId: "$senderId",
+              receiver: "receiver",
               receiverId: "$receiverId",
-              timestamp: "$timestamp",
+              timestamp: "$timestamp"
             },
           },
         },
