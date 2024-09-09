@@ -44,11 +44,14 @@ export default function Navbar() {
 
 
   return (
-    <nav className="bg-gray-300 bg-transparent">
+    <nav className="bg-gray-300 bg-transparent shadow-gray-500 border-b-2 border-gray-700">
       <div className="max-w-7xl px-2 sm:px-6 lg:px-4">
         <div className="relative flex items-center justify-between">
           <div className="flex items-center">
             <h3 className="text-black font-bold">Webchat</h3>
+          </div>
+          <div className="bg-blue-500 text-gray-100 p-1 rounded cursor-pointer">
+            <h3>Add Friends</h3>
           </div>
           <div className="flex items-center space-x-4 pr-2">
             <div className="relative">

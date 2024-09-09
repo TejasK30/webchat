@@ -1,3 +1,4 @@
+import { updateUser } from "../pages/Profile"
 import { FriendDoc } from "../store/friendStore"
 import { LoginFormData, RegisterFormData } from "../utils/types"
 
@@ -80,7 +81,7 @@ export const fetchClickedUser = async (userId: string) => {
       `${url}/api/messages/clicked-user/getMessages/${userId}`,
       {
         credentials: "include",
-      }
+      },
     )
 
     const data = await response.json()
@@ -102,6 +103,25 @@ export const logout = async () => {
     }
   } catch (error) {
     console.error("Error during logout:", error)
+    throw error
+  }
+}
+
+export const updateUserDetails = async (updateUserData: updateUser) => {
+  const { userId } = updateUserData
+  try {
+    const response = await fetch(`${url}/api/users/updateuser/${userId}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateUserData),
+    })
+    const data = await response.json()
+    //return data
+  } catch (error) {
+    console.error("Error during update details", error)
     throw error
   }
 }

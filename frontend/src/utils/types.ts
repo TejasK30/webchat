@@ -60,3 +60,9 @@ export interface MessageResponse {
   dateToFormat: Date
   messages: MessageType[]
 }
+
+export interface updateUserType {
+  username: string
+  email: string
+  password: string
+}

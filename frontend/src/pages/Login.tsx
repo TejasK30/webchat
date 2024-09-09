@@ -37,7 +37,7 @@ const Login = () => {
   })
 
   const onSubmit = handleSubmit((data: LoginFormData) => {
-    mutation.mutate(data)
+    mutation.mutateAsync(data)
   })
 
   return (
