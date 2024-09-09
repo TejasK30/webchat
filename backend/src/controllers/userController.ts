@@ -98,7 +98,7 @@ export const loginController = async (req: Request, res: Response) => {
       process.env.JWT_SECRET_KEY as string,
       {
         expiresIn: "1d",
-      }
+      },
     )
 
     res.cookie("auth_token", token, {
@@ -118,7 +118,7 @@ export const loginController = async (req: Request, res: Response) => {
 export const validateUserController = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const token = req.cookies["auth_token"]
 
@@ -140,7 +140,7 @@ export const fetchFriendsForUser = async (req: Request, res: Response) => {
 
   const friends = await Friends.find({ userId: userId }).populate(
     "friends",
-    "username email"
+    "username email",
   )
 
   return res.status(200).json(friends)
@@ -154,5 +154,31 @@ export const logoutController = async (req: Request, res: Response) => {
       .send("User logged out successfully!")
   } catch (err) {
     return res.status(500).json(err)
+  }
+}
+
+export const upaateUserController = async (req: Request, res: Response) => {
+  try {
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10)
+      req.body.password = bcrypt.hashSync(req.body.password, salt)
+    }
+    const userId = req.params.userId
+
+    const upDatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+        },
+      },
+      { new: true },
+    )
+
+    return res.status(200).json(upDatedUser)
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" })
   }
 }
