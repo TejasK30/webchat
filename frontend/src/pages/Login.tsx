@@ -29,7 +29,7 @@ const Login = () => {
         username: userData.username,
         email: userData.email
       })
-      navigate('/')
+      navigate('/chat')
     },
     onError: () => {
       console.log("error")

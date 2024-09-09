@@ -1,9 +1,17 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import useUserContext from "../hooks/useUserContext"
+import { useEffect } from "react"
 
 const Landing = () => {
   const { isLoggedin } = useUserContext()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(isLoggedin){
+      navigate("/chat")
+    }
+  }, [isLoggedin])
 
   return (
     <>

@@ -90,16 +90,16 @@ const Chat = () => {
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
-      <div className="flex h-full">
-        <div className="flex flex-col">
-          <h3 className="flex w-full font-bold text-2xl text-center bg-green-500 py-2">
+      <div className="flex h-full overflow-hidden">
+        <div className="flex flex-col w-1/4">
+          <h3 className="flex w-full font-bold text-2xl text-center bg-green-500 p-2">
             Friends
           </h3>
           <div className="flex w-full items-center">
             <FriendsList />
           </div>
         </div>
-        <div className="flex flex-col w-full bg-blue-200">
+        <div className="flex flex-col w-3/4 bg-blue-200">
           <div className="flex bg-blue-500 items-center">
             <div className="flex items-center justify-center h-8 w-8 rounded-[50%] bg-red-700 text-gray-100 m-2 py-2">
               {selectedUser?.username.charAt(0).toUpperCase() || ""}
