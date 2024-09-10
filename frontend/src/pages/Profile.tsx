@@ -4,15 +4,10 @@ import { useUserStore } from "../store/userStore"
 import { updateUserDetails } from "../client/apiClient"
 import { useForm } from "react-hook-form"
 import { updateUserType, userInfo } from "../utils/types"
-import { useState } from "react"
-import { FaEye, FaEyeSlash } from "react-icons/fa"
-import { Link } from "react-router-dom"
 
 const Profile = () => {
   const { userId, username, email, setUser } = useUserStore() // Accessing userId, username, and email from store
-  const [showPassword, setShowPassword] = useState(false)
 
-  const togglePasswordVisibility = () => setShowPassword(!showPassword)
 
   const mutation = useMutation({
     mutationKey: ["updateUserDetails"],

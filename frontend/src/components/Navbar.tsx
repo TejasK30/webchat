@@ -50,7 +50,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <h3 className="text-black font-bold">Webchat</h3>
           </div>
-          <div className="bg-blue-500 text-gray-100 p-1 rounded cursor-pointer">
+          <div onClick={ () => navigate('/add-friends')} className="bg-blue-500 text-gray-100 p-1 rounded cursor-pointer">
             <h3>Add Friends</h3>
           </div>
           <div className="flex items-center space-x-4 pr-2">
