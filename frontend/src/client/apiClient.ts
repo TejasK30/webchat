@@ -1,23 +1,8 @@
 import { updateUser } from "../pages/Profile"
 import { FriendDoc } from "../store/friendStore"
-import { LoginFormData, RegisterFormData } from "../utils/types"
+import { LoginFormData, RegisterFormData, updateUserType } from "../utils/types"
 
 const url = import.meta.env.VITE_API_BASE_URL
-
-// export const checkUsername = async (username: string) => {
-//   const response = await fetch(`${url}/api/users/check-username`, {
-//     method: "POST",
-//     credentials: "include",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({username}),
-//   })
-
-//   const data = await response.json()
-
-//   return data.exists
-// }
 
 export const registeruser = async (data: RegisterFormData) => {
   const response = await fetch(`${url}/api/users/register`, {
@@ -107,10 +92,9 @@ export const logout = async () => {
   }
 }
 
-export const updateUserDetails = async (updateUserData: updateUser) => {
-  const { userId } = updateUserData
+export const updateUserDetails = async (userId: string, updateUserData: updateUserType) => {
   try {
-    const response = await fetch(`${url}/api/users/updateuser/${userId}`, {
+    const response = await fetch(`${url}/api/users/update/${userId}`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -118,10 +102,17 @@ export const updateUserDetails = async (updateUserData: updateUser) => {
       },
       body: JSON.stringify(updateUserData),
     })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update user details")
+    }
+
     const data = await response.json()
-    //return data
+    return data 
+
   } catch (error) {
-    console.error("Error during update details", error)
+    console.error("Error during update details:", error)
     throw error
   }
 }

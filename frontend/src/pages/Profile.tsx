@@ -8,28 +8,32 @@ import { useState } from "react"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { Link } from "react-router-dom"
 
-export interface updateUser {
-  userId: string
-  details: updateUserType
-}
 const Profile = () => {
-  const { username, email } = useUserStore()
+  const { userId, username, email } = useUserStore() // Accessing userId, username, and email from store
   const [showPassword, setShowPassword] = useState(false)
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword)
 
   const mutation = useMutation({
     mutationKey: ["updateUserDetails"],
-    mutationFn: updateUserDetails,
+    mutationFn: ({ userId, data }: { userId: string; data: updateUserType }) =>
+      updateUserDetails(userId, data),
+    onSuccess: () => {
+      console.log("Update user details success")
+    },
+    onError: () => {
+      console.log("Update user details failed")
+    }
   })
 
   const {
-    //formState: { errors },
+    register,
     handleSubmit,
+    formState: { errors },
   } = useForm<updateUserType>()
 
-  const onSubmit = handleSubmit((data: updateUser) => {
-    mutation.mutateAsync(data)
+  const onSubmit = handleSubmit((data: updateUserType) => {
+    mutation.mutateAsync({ userId, data })
   })
 
   return (
@@ -45,15 +49,21 @@ const Profile = () => {
           <div className="mb-2">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="email"
+              htmlFor="username"
             >
               Username
               <input
-                id="email"
-                value={username}
+                id="username"
+                defaultValue={username} // Set default value
+                {...register("username", { required: "Username is required" })} // Add validation
                 className="border-2 border-gray-500 rounded w-full text-gray-800 py-2 px-3 outline-none"
               />
             </label>
+            {errors.username && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.username.message}
+              </p>
+            )}
           </div>
 
           <div className="mb-2">
@@ -65,56 +75,26 @@ const Profile = () => {
               <input
                 id="email"
                 type="email"
-                value={email}
+                defaultValue={email} // Set default value
+                {...register("email", { required: "Email is required" })} // Add validation
                 className="border-2 border-gray-500 rounded w-full text-gray-800 py-2 px-3 outline-none"
               />
             </label>
+            {errors.email && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
-          {/*
-<div className="mb-2">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Password
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  className="border-2 border-gray-500 rounded w-full text-gray-800 py-2 px-3 outline-none"
-                  {...register("password", {
-                    required: "This field is required!",
-                    minLength: {
-                      value: 6,
-                      message: "Password must be 6 or more characters!",
-                    },
-                  })}
-                />
-                <span
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-500"
-                  onClick={togglePasswordVisibility}
-                >
-                  {showPassword ? <FaEye /> : <FaEyeSlash />}
-                </span>
-              </div>
-              {errors.password && (
-                <p className="text-red-600 text-xs mt-1">
-                  {errors.password.message}
-                </p>
-              )}
-            </label>
-          </div>
-            */}
           <button
             type="submit"
             className="bg-blue-500 text-white font-semibold rounded py-2 px-4 hover:bg-blue-600"
           >
             Submit
           </button>
-
-      </form>
-      </div>{" "}
+        </form>
+      </div>
     </>
   )
 }

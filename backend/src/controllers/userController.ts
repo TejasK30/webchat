@@ -16,28 +16,6 @@ const loginSchema = z.object({
   password: z.string(),
 })
 
-// export const checkUsernameController = async (req: Request, res: Response) => {
-//   const { username } = req.body
-
-//   try {
-//     const usernameExists = await UserModel.findOne({
-//       username: username,
-//     })
-
-//     if (usernameExists) {
-//       return res
-//         .status(400)
-//         .json({ message: "User already exists", exists: true })
-//     }
-
-//     return res
-//       .status(400)
-//       .json({ message: "username available", exists: false })
-//   } catch (error) {
-//     res.status(500).json({ message: "Internal server error" })
-//   }
-// }
-
 export const registerController = async (req: Request, res: Response) => {
   registerSchema.safeParse(req.body)
 
@@ -157,7 +135,7 @@ export const logoutController = async (req: Request, res: Response) => {
   }
 }
 
-export const upaateUserController = async (req: Request, res: Response) => {
+export const updateUserController = async (req: Request, res: Response) => {
   try {
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10)

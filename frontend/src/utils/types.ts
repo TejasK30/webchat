@@ -64,5 +64,4 @@ export interface MessageResponse {
 export interface updateUserType {
   username: string
   email: string
-  password: string
 }
