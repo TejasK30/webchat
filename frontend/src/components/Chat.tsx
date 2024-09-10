@@ -22,10 +22,10 @@ const Chat = () => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: isInitialLoad ?  "auto": "smooth" })
+      messagesEndRef.current.scrollIntoView({ behavior: isInitialLoad ? "auto" : "smooth" })
     }
     setIsInitialLoad(false)
-    if(window.closed){
+    if (window.closed) {
       setSelectedUser('', '')
     }
   }, [isInitialLoad, messages, selectedUser, setSelectedUser])
@@ -82,6 +82,8 @@ const Chat = () => {
     ]
   )
 
+  console.log(`Loggedin User ID: ${userId} Selected userId: ${selectedUser?.id}`)
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTextMessage(e.target.value)
     socket.emit("typing", { roomId: selectedUser?.id, userId })
@@ -116,8 +118,8 @@ const Chat = () => {
               messages.map((msg, index) => {
                 const currentMessageDate = new Date(msg.dateToFormat).toDateString()
                 const previousMessageDate = index > 0
-                    ? new Date(messages[index - 1].dateToFormat).toDateString()
-                    : null
+                  ? new Date(messages[index - 1].dateToFormat).toDateString()
+                  : null
 
                 return (
                   <div key={msg._id} className="flex flex-col space-y-2">
@@ -128,23 +130,21 @@ const Chat = () => {
                     )}
 
                     {msg.messages.map((message) => (
-                      <>
+                      <div key={message._id} className="flex flex-col space-y-2">
                         <div
                           key={message._id}
-                          className={`p-2 rounded-lg max-w-[50%] ${
-                            message.senderId === userId
+                          className={`p-2 rounded-lg max-w-[50%] ${message.senderId === userId
                               ? "self-end bg-blue-100"
                               : "self-start bg-gray-100"
-                          }`}
+                            }`}
                         >
                           {message.text}
                         </div>
                         <h3
-                          className={`text-xs ${
-                            message.senderId === userId
+                          className={`text-xs ${message.senderId === userId
                               ? "text-right"
                               : "text-left"
-                          }`}
+                            }`}
                         >
                           {new Date(message.timestamp).toLocaleTimeString(
                             "en-US",
@@ -154,7 +154,7 @@ const Chat = () => {
                             }
                           )}
                         </h3>
-                      </>
+                      </div>
                     ))}
                   </div>
                 )
@@ -192,4 +192,4 @@ const Chat = () => {
   )
 }
 
-export default Chat
+export default Chat 
