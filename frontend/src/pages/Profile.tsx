@@ -3,13 +3,13 @@ import Navbar from "../components/Navbar"
 import { useUserStore } from "../store/userStore"
 import { updateUserDetails } from "../client/apiClient"
 import { useForm } from "react-hook-form"
-import { updateUserType } from "../utils/types"
+import { updateUserType, userInfo } from "../utils/types"
 import { useState } from "react"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { Link } from "react-router-dom"
 
 const Profile = () => {
-  const { userId, username, email } = useUserStore() // Accessing userId, username, and email from store
+  const { userId, username, email, setUser } = useUserStore() // Accessing userId, username, and email from store
   const [showPassword, setShowPassword] = useState(false)
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword)
@@ -18,12 +18,17 @@ const Profile = () => {
     mutationKey: ["updateUserDetails"],
     mutationFn: ({ userId, data }: { userId: string; data: updateUserType }) =>
       updateUserDetails(userId, data),
-    onSuccess: () => {
+    onSuccess: (userData: userInfo) => {
       console.log("Update user details success")
+      setUser({
+        userId: userData.userId,
+        username: userData.username,
+        email: userData.email,
+      })
     },
     onError: () => {
       console.log("Update user details failed")
-    }
+    },
   })
 
   const {
