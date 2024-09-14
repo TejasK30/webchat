@@ -8,10 +8,12 @@ import { MessageType } from "../utils/types"
 import FriendsList from "./FriendList"
 import Navbar from "./Navbar"
 import { formatDate } from "../utils/helpers"
+import { motion, AnimatePresence } from "framer-motion"
 
 const Chat = () => {
   const { userId, username } = useUserStore()
-  const { selectedUser, messages, addMessage, setMessages, setSelectedUser } = useMessageStore()
+  const { selectedUser, messages, addMessage, setMessages, setSelectedUser } =
+    useMessageStore()
 
   const [textMessage, setTextMessage] = useState<string>("")
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -22,11 +24,13 @@ const Chat = () => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: isInitialLoad ? "auto" : "smooth" })
+      messagesEndRef.current.scrollIntoView({
+        behavior: isInitialLoad ? "auto" : "smooth",
+      })
     }
     setIsInitialLoad(false)
     if (window.closed) {
-      setSelectedUser('', '')
+      setSelectedUser("", "")
     }
   }, [isInitialLoad, messages, selectedUser, setSelectedUser])
 
@@ -60,6 +64,7 @@ const Chat = () => {
   const sendMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
+      if (textMessage.trim() === "") return
       const newMessage: MessageType = {
         sender: username,
         senderId: userId,
@@ -79,10 +84,8 @@ const Chat = () => {
       selectedUser?.id,
       textMessage,
       socket,
-    ]
+    ],
   )
-
-  console.log(`Loggedin User ID: ${userId} Selected userId: ${selectedUser?.id}`)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTextMessage(e.target.value)
@@ -90,99 +93,114 @@ const Chat = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-gray-100">
       <Navbar />
-      <div className="flex h-full overflow-hidden">
-        <div className="flex flex-col w-1/4">
-          <h3 className="flex w-full font-bold text-2xl text-center bg-green-500 p-2">
+      <div className="flex flex-1 overflow-hidden">
+        <div className="w-1/4 bg-white shadow-md">
+          <h3 className="font-bold text-2xl text-center bg-indigo-600 text-white p-2">
             Friends
           </h3>
-          <div className="flex w-full items-center">
-            <FriendsList />
-          </div>
+          <FriendsList />
         </div>
-        <div className="flex flex-col w-3/4 bg-blue-200">
-          <div className="flex bg-blue-500 items-center">
-            <div className="flex items-center justify-center h-8 w-8 rounded-[50%] bg-red-700 text-gray-100 m-2 py-2">
+        <div className="flex flex-col w-3/4 bg-gray-50">
+          <div className="bg-white shadow-md p-2 flex items-center">
+            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-600 text-white mr-3">
               {selectedUser?.username.charAt(0).toUpperCase() || ""}
             </div>
-            <div className="flex flex-col">
-              <h3 className="text-md text-gray-100">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">
                 {selectedUser?.username || "Select a friend to chat"}
               </h3>
-              <h2 className="text-sm text-green-300">Online</h2>
+              <p className="text-sm text-green-500">Online</p>
             </div>
           </div>
-          <div className="flex flex-col space-y-2 p-4 flex-grow overflow-y-auto">
-            {Array.isArray(messages) && messages.length > 0 ? (
-              messages.map((msg, index) => {
-                const currentMessageDate = new Date(msg.dateToFormat).toDateString()
-                const previousMessageDate = index > 0
-                  ? new Date(messages[index - 1].dateToFormat).toDateString()
-                  : null
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <AnimatePresence>
+              {Array.isArray(messages) && messages.length > 0 ? (
+                messages.map((msg, index) => {
+                  const currentMessageDate = new Date(
+                    msg.dateToFormat,
+                  ).toDateString()
+                  const previousMessageDate =
+                    index > 0
+                      ? new Date(
+                          messages[index - 1].dateToFormat,
+                        ).toDateString()
+                      : null
 
-                return (
-                  <div key={msg._id} className="flex flex-col space-y-2">
-                    {currentMessageDate !== previousMessageDate && (
-                      <div className="text-center bg-blue-500 text-gray-100 rounded-md">
-                        {formatDate(new Date(msg.dateToFormat))}
-                      </div>
-                    )}
-
-                    {msg.messages.map((message) => (
-                      <div key={message._id} className="flex flex-col space-y-2">
-                        <div
-                          key={message._id}
-                          className={`p-2 rounded-lg max-w-[50%] ${message.senderId === userId
-                              ? "self-end bg-blue-100"
-                              : "self-start bg-gray-100"
-                            }`}
-                        >
-                          {message.text}
+                  return (
+                    <motion.div
+                      key={msg._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="space-y-2"
+                    >
+                      {currentMessageDate !== previousMessageDate && (
+                        <div className="text-center text-sm text-gray-500 my-2">
+                          {formatDate(new Date(msg.dateToFormat))}
                         </div>
-                        <h3
-                          className={`text-xs ${message.senderId === userId
-                              ? "text-right"
-                              : "text-left"
-                            }`}
+                      )}
+
+                      {msg.messages.map((message) => (
+                        <motion.div
+                          key={message._id}
+                          className={`flex flex-col space-y-1 ${
+                            message.senderId === userId
+                              ? "items-end"
+                              : "items-start"
+                          }`}
                         >
-                          {new Date(message.timestamp).toLocaleTimeString(
-                            "en-US",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
-                        </h3>
-                      </div>
-                    ))}
-                  </div>
-                )
-              })
-            ) : (
-              <p className="text-center">No messages to display</p>
-            )}
+                          <div
+                            className={`p-3 rounded-lg max-w-[70%] ${
+                              message.senderId === userId
+                                ? "bg-indigo-600 text-white"
+                                : "bg-gray-200 text-gray-800"
+                            }`}
+                          >
+                            {message.text}
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {new Date(message.timestamp).toLocaleTimeString(
+                              "en-US",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )
+                })
+              ) : (
+                <p className="text-center text-gray-500">
+                  No messages to display
+                </p>
+              )}
+            </AnimatePresence>
             <div ref={messagesEndRef} />
           </div>
           <form
-            className="sticky bottom-0 bg-blue-200"
+            className="bg-white p-4 shadow-md"
             ref={formRef}
             onSubmit={sendMessage}
           >
-            <div className="flex items-center justify-center w-full mb-1 gap-1">
+            <div className="flex items-center space-x-2">
               <input
                 type="text"
-                placeholder="Enter message"
-                className="flex w-full py-2 px-1 outline-none rounded-md ml-1"
+                placeholder="Type a message..."
+                className="flex-1 py-2 px-4 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 onChange={handleInputChange}
                 value={textMessage}
                 autoFocus
               />
               <button
                 type="submit"
-                className="bg-blue-400 h-full rounded-md py-2 px-1"
+                className="bg-indigo-600 text-white rounded-full p-2 hover:bg-indigo-700 transition-colors duration-200"
               >
-                <IoSend size={30} color="blue" />
+                <IoSend size={24} />
               </button>
             </div>
           </form>
@@ -192,4 +210,4 @@ const Chat = () => {
   )
 }
 
-export default Chat 
+export default Chat

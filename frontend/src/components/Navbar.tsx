@@ -1,12 +1,22 @@
+import React, { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { FaRegUserCircle } from "react-icons/fa"
-import { useState } from "react"
+import {
+  FaRegUserCircle,
+  FaCog,
+  FaSignOutAlt,
+  FaUserPlus,
+} from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { logout } from "../client/apiClient"
 import { useUserStore } from "../store/userStore"
 import useUserContext from "../hooks/useUserContext"
+import { motion, AnimatePresence } from "framer-motion"
 
-const navLinks = ["Profile", "Settings", "Sign out"]
+const navLinks = [
+  { name: "Profile", icon: FaRegUserCircle },
+  { name: "Settings", icon: FaCog },
+  { name: "Sign out", icon: FaSignOutAlt },
+]
 const newLinks = ["register", "login"]
 
 export default function Navbar() {
@@ -25,7 +35,7 @@ export default function Navbar() {
     mutationFn: logout,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["validateUser"] })
-      console.log("sucess logout")
+      console.log("success logout")
       setUser({
         userId: "",
         username: "",
@@ -42,71 +52,80 @@ export default function Navbar() {
     mutation.mutate()
   }
 
-
   return (
-    <nav className="bg-gray-300 bg-transparent shadow-gray-500 border-b-2 border-gray-700">
-      <div className="max-w-7xl px-2 sm:px-6 lg:px-4">
-        <div className="relative flex items-center justify-between">
+    <nav className="bg-white shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <h3 className="text-black font-bold">Webchat</h3>
+            <Link to="/" className="flex-shrink-0 flex items-center">
+              <h3 className="text-indigo-600 font-bold text-xl">Webchat</h3>
+            </Link>
           </div>
-          <div onClick={ () => navigate('/add-friends')} className="bg-blue-500 text-gray-100 p-1 rounded cursor-pointer">
-            <h3>Add Friends</h3>
-          </div>
-          <div className="flex items-center space-x-4 pr-2">
+          <div className="flex items-center">
+            <button
+              onClick={() => navigate("/add-friends")}
+              className="bg-indigo-600 text-white px-2 py-2 rounded-md mr-4 hover:bg-indigo-700 transition-colors duration-200 flex items-center"
+            >
+              <FaUserPlus className="mr-2" />
+              Add Friends
+            </button>
             <div className="relative">
               <button
-                className="flex text-sm focus:outline-none "
+                className="flex text-sm focus:outline-none"
                 onClick={() => setProfileOpen(!profileOpen)}
               >
                 <span className="sr-only">Open user menu</span>
-                <div className={`${isLoggedin ? 'bg-red-700' : 'bg-gray-600'} text-gray-100 flex items-center justify-center h-8 w-8 rounded-full m-2 py-2`}>
-                {isLoggedin ? username.charAt(0).toUpperCase() || "" : <FaRegUserCircle />}
-                </div>{" "}
-              </button>
-              {profileOpen && (
-                <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  {isLoggedin
-                    ? navLinks.map((item) =>
-                        item === "Sign out" ? (
-                          <div
-                            key={item}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 cursor-pointer"
-                            onClick={handleClick}
-                          >
-                            {item}
-                          </div>
-                        ) : (
-                          <Link
-                            key={item}
-                            to={`/${item.toLowerCase().replace(" ", "-")}`}
-                            className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-300"
-                          >
-                            {item}
-                          </Link>
-                        )
-                      )
-                    : newLinks.map((item) =>
-                        item === "Sign out" ? (
-                          <div
-                            key={item}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 cursor-pointer"
-                            onClick={handleClick}
-                          >
-                            {item}
-                          </div>
-                        ) : (
-                          <Link
-                            key={item}
-                            to={`/${item.toLowerCase().replace(" ", "-")}`}
-                            className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-300"
-                          >
-                            {item}
-                          </Link>
-                        )
-                      )}
+                <div
+                  className={`${isLoggedin ? "bg-indigo-600" : "bg-gray-600"} text-white flex items-center justify-center h-10 w-10 rounded-full`}
+                >
+                  {isLoggedin ? (
+                    username.charAt(0).toUpperCase()
+                  ) : (
+                    <FaRegUserCircle />
+                  )}
                 </div>
-              )}
+              </button>
+              <AnimatePresence>
+                {profileOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
+                    {isLoggedin
+                      ? navLinks.map((item) => (
+                          <motion.div
+                            key={item.name}
+                            whileHover={{ backgroundColor: "#F3F4F6" }}
+                            className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                            onClick={
+                              item.name === "Sign out"
+                                ? handleClick
+                                : () =>
+                                    navigate(
+                                      `/${item.name.toLowerCase().replace(" ", "-")}`,
+                                    )
+                            }
+                          >
+                            <div className="flex items-center">
+                              <item.icon className="mr-2" />
+                              {item.name}
+                            </div>
+                          </motion.div>
+                        ))
+                      : newLinks.map((item) => (
+                          <Link
+                            key={item}
+                            to={`/${item.toLowerCase()}`}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {item.charAt(0).toUpperCase() + item.slice(1)}
+                          </Link>
+                        ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
