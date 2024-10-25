@@ -84,7 +84,7 @@ const Chat = () => {
       selectedUser?.id,
       textMessage,
       socket,
-    ],
+    ]
   )
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,8 +96,8 @@ const Chat = () => {
     <div className="flex flex-col h-screen bg-gray-100">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-1/4 bg-white shadow-md">
-          <h3 className="font-bold text-2xl text-center bg-indigo-600 text-white p-2">
+        <div className="w-1/4 bg-white shadow-md justify-center">
+          <h3 className="font-bold h-16 text-2xl  text-center bg-indigo-600 text-white p-2">
             Friends
           </h3>
           <FriendsList />
@@ -119,12 +119,12 @@ const Chat = () => {
               {Array.isArray(messages) && messages.length > 0 ? (
                 messages.map((msg, index) => {
                   const currentMessageDate = new Date(
-                    msg.dateToFormat,
+                    msg.dateToFormat
                   ).toDateString()
                   const previousMessageDate =
                     index > 0
                       ? new Date(
-                          messages[index - 1].dateToFormat,
+                          messages[index - 1].dateToFormat
                         ).toDateString()
                       : null
 
@@ -166,7 +166,7 @@ const Chat = () => {
                               {
                                 hour: "2-digit",
                                 minute: "2-digit",
-                              },
+                              }
                             )}
                           </span>
                         </motion.div>
@@ -191,7 +191,7 @@ const Chat = () => {
               <input
                 type="text"
                 placeholder="Type a message..."
-                className="flex-1 py-2 px-4 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 outline-none py-2 px-4 bg-gray-100 rounded-full border-2 border-indigo-700"
                 onChange={handleInputChange}
                 value={textMessage}
                 autoFocus

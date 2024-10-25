@@ -1,17 +1,17 @@
-import React, { useEffect } from "react"
-import { fetchClickedUser, fetchFriends } from "../client/apiClient"
-import { useFriendStore } from "../store/friendStore"
-import { useUserStore } from "../store/userStore"
-import { useMessageStore } from "../store/messageStore"
-import useUserContext from "../hooks/useUserContext"
 import { motion } from "framer-motion"
+import React, { useEffect } from "react"
 import { FaUserFriends } from "react-icons/fa"
+import { fetchClickedUser, fetchFriends } from "../client/apiClient"
+import useUserContext from "../hooks/useUserContext"
+import { useFriendStore } from "../store/friendStore"
+import { useMessageStore } from "../store/messageStore"
+import { useUserStore } from "../store/userStore"
 
 const FriendsList: React.FC = () => {
   const { userId } = useUserStore()
   const { isLoggedin } = useUserContext()
   const { friends, setFriends } = useFriendStore()
-  const { setMessages, setSelectedUser } = useMessageStore()
+  const { setMessages, setSelectedUser, selectedUser } = useMessageStore()
 
   useEffect(() => {
     if (userId) {
@@ -43,25 +43,26 @@ const FriendsList: React.FC = () => {
 
   return (
     <div className="bg-gray-100 rounded-lg shadow-lg p-4 max-h-[calc(100vh-120px)] overflow-y-auto">
-      <div className="flex items-center mb-4">
-        <FaUserFriends className="text-indigo-600 text-2xl mr-2" />
-        <h2 className="text-xl font-semibold text-gray-800">Friends</h2>
-      </div>
+      <div className="flex items-center mb-4"></div>
       <ul className="space-y-2">
         {friends.map((friend) => (
           <li key={friend._id}>
             {friend.friends.map((f) => (
               <motion.div
                 key={f._id}
-                className="bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-300 cursor-pointer"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
+                className={`${
+                  selectedUser?.id === f._id ? "bg-indigo-200" : "bg-white"
+                } rounded-lg shadow hover:shadow-md transition-shadow duration-300 cursor-pointer`}
+                whileHover={{ scale: 0.98 }}
+                // whileTap={{ scale: 0.98 }}
                 onClick={() => handleUserClick(f._id, f.username)}
               >
                 <div className="flex items-center p-3">
                   <div
-                    className={`${isLoggedin ? "bg-indigo-600" : "bg-gray-400"
-                      } text-white flex items-center justify-center h-10 w-10 rounded-full mr-3`}
+                    className={`${
+                      isLoggedin ? "bg-indigo-600" : "bg-gray-400"
+                    } text-white flex items-center justify-center 
+                      h-10 w-10 sm:h-8 sm:w-8 rounded-full mr-3 shrink-0`}
                   >
                     {isLoggedin ? (
                       f.username.charAt(0).toUpperCase()
@@ -69,9 +70,11 @@ const FriendsList: React.FC = () => {
                       <FaUserFriends />
                     )}
                   </div>
-                  <div>
-                    <h3 className="font-medium text-gray-800">{f.username}</h3>
-                    <p className="text-sm text-gray-500">
+                  <div className="flex-1 overflow-hidden">
+                    <h3 className="font-medium text-gray-800 text-lg sm:text-lg">
+                      {f.username}
+                    </h3>
+                    <p className="text-sm sm:text-xs text-gray-500">
                       {isLoggedin ? "Online" : "Offline"}
                     </p>
                   </div>
@@ -86,30 +89,3 @@ const FriendsList: React.FC = () => {
 }
 
 export default FriendsList
-
-  
-    
-    
-        
-      
-            
-          
-                
-              
-                
-            
-              
-          
-                
-              
-                
-              
-                
-            
-                  
-            
-                
-            
-            
-            
-            
