@@ -2,14 +2,13 @@ import { motion } from "framer-motion"
 import React, { useEffect } from "react"
 import { FaUserFriends } from "react-icons/fa"
 import { fetchClickedUser, fetchFriends } from "../client/apiClient"
-import useUserContext from "../hooks/useUserContext"
 import { useFriendStore } from "../store/friendStore"
 import { useMessageStore } from "../store/messageStore"
 import { useUserStore } from "../store/userStore"
 
 const FriendsList: React.FC = () => {
   const { userId } = useUserStore()
-  const { isLoggedin } = useUserContext()
+  const { isLoggedin } = useUserStore()
   const { friends, setFriends } = useFriendStore()
   const { setMessages, setSelectedUser, selectedUser } = useMessageStore()
 
@@ -42,7 +41,7 @@ const FriendsList: React.FC = () => {
   }
 
   return (
-    <div className="bg-gray-100 rounded-lg shadow-lg p-4 max-h-[calc(100vh-120px)] overflow-y-auto">
+    <div className="bg-gray-100 rounded-lg shadow-lg p-2 max-h-[calc(100vh-120px)] overflow-y-auto">
       <div className="flex items-center mb-4"></div>
       <ul className="space-y-2">
         {friends.map((friend) => (

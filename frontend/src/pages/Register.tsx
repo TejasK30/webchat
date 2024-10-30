@@ -2,15 +2,16 @@ import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { registeruser } from "../client/apiClient"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { RegisterFormData } from "../utils/types"
+import { useUserStore } from "../store/userStore"
 
 const Register = () => {
   const [username, setUsername] = useState<string>("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
+  const { isLoggedin } = useUserStore()
   const navigate = useNavigate()
 
   const togglePasswordVisibility = () => {
@@ -25,8 +26,6 @@ const Register = () => {
     register,
     watch,
     handleSubmit,
-    // setError,
-    // clearErrors,
     formState: { errors },
   } = useForm<RegisterFormData>()
 
@@ -34,45 +33,18 @@ const Register = () => {
     mutationFn: registeruser,
     onSuccess: () => {
       console.log("Registration successful")
-      navigate('/login')
+      navigate("/login")
     },
     onError: (error: Error) => {
       console.log("Registration error", error)
     },
   })
 
-  // const usernameCheckMutation = useMutation({
-  //   mutationFn: checkUsername,
-  //   onSuccess: (exists) => {
-  //     if (exists) {
-  //       setError("username", {
-  //         type: "manual",
-  //         message: "Username already exists",
-  //       })
-  //     } else {
-  //       clearErrors("username")
-  //     }
-  //   },
-  //   onError: (error: Error) => {
-  //     console.error("Error checking username:", error)
-  //   },
-  // })
-
-  // useEffect(() => {
-  //   const validateUsername = async () => {
-  //     if (username) {
-  //       usernameCheckMutation.mutate(username)
-  //     }
-  //   }
-
-  //   const debounceTimeout = setTimeout(() => {
-  //     validateUsername()
-  //   }, 1000)
-
-  //   return () => {
-  //     clearTimeout(debounceTimeout)
-  //   }
-  // }, [username, setError, clearErrors, usernameCheckMutation])
+  useEffect(() => {
+    if (isLoggedin) {
+      navigate("/chat")
+    }
+  }, [isLoggedin, navigate])
 
   const onSubmit = handleSubmit((data) => {
     registerMutation.mutate(data)

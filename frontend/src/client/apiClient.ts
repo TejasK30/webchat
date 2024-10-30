@@ -1,4 +1,3 @@
-import { updateUser } from "../pages/Profile"
 import { FriendDoc } from "../store/friendStore"
 import { LoginFormData, RegisterFormData, updateUserType } from "../utils/types"
 
@@ -49,8 +48,6 @@ export const validateUser = async () => {
 }
 
 export const fetchFriends = async (userId: string): Promise<FriendDoc[]> => {
-  console.log(userId)
-
   try {
     const response = await fetch(`${url}/api/users/fetchfriends/${userId}`)
     return response.json()
@@ -66,7 +63,7 @@ export const fetchClickedUser = async (userId: string) => {
       `${url}/api/messages/clicked-user/getMessages/${userId}`,
       {
         credentials: "include",
-      },
+      }
     )
 
     const data = await response.json()
@@ -92,7 +89,10 @@ export const logout = async () => {
   }
 }
 
-export const updateUserDetails = async (userId: string, updateUserData: updateUserType) => {
+export const updateUserDetails = async (
+  userId: string,
+  updateUserData: updateUserType
+) => {
   try {
     const response = await fetch(`${url}/api/users/update/${userId}`, {
       method: "POST",
@@ -109,8 +109,7 @@ export const updateUserDetails = async (userId: string, updateUserData: updateUs
     }
 
     const data = await response.json()
-    return data 
-
+    return data
   } catch (error) {
     console.error("Error during update details:", error)
     throw error

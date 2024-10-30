@@ -1,14 +1,14 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import Chat from "./components/Chat"
-import Login from "./pages/Login"
-import Register from "./pages/Register"
-import Profile from "./pages/Profile"
-import useUserContext from "./hooks/useUserContext"
+import AddFriends from "./pages/AddFriends"
 import Landing from "./pages/Landing"
-import AddFriends from './pages/AddFriends'
+import Login from "./pages/Login"
+import Profile from "./pages/Profile"
+import Register from "./pages/Register"
+import { useUserStore } from "./store/userStore"
 
 const App = () => {
-  const { isLoggedin } = useUserContext()
+  const { isLoggedin } = useUserStore()
 
   return (
     <>

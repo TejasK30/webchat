@@ -1,16 +1,15 @@
-import React, { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { AnimatePresence, motion } from "framer-motion"
+import { useState } from "react"
 import {
-  FaRegUserCircle,
   FaCog,
+  FaRegUserCircle,
   FaSignOutAlt,
   FaUserPlus,
 } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { logout } from "../client/apiClient"
 import { useUserStore } from "../store/userStore"
-import useUserContext from "../hooks/useUserContext"
-import { motion, AnimatePresence } from "framer-motion"
 
 const navLinks = [
   { name: "Profile", icon: FaRegUserCircle },
@@ -20,10 +19,9 @@ const navLinks = [
 const newLinks = ["register", "login"]
 
 export default function Navbar() {
-  const { isLoggedin } = useUserContext()
   const { username } = useUserStore()
   const { setUser } = useUserStore()
-
+  const { isLoggedin } = useUserStore()
   const [profileOpen, setProfileOpen] = useState(false)
 
   const navigate = useNavigate()
@@ -53,7 +51,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-[#C4D7FF] shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -76,7 +74,9 @@ export default function Navbar() {
               >
                 <span className="sr-only">Open user menu</span>
                 <div
-                  className={`${isLoggedin ? "bg-indigo-600" : "bg-gray-600"} text-white flex items-center justify-center h-10 w-10 rounded-full`}
+                  className={`${
+                    isLoggedin ? "bg-indigo-600" : "bg-gray-600"
+                  } text-white flex items-center justify-center h-10 w-10 rounded-full`}
                 >
                   {isLoggedin ? (
                     username.charAt(0).toUpperCase()
@@ -104,7 +104,9 @@ export default function Navbar() {
                                 ? handleClick
                                 : () =>
                                     navigate(
-                                      `/${item.name.toLowerCase().replace(" ", "-")}`,
+                                      `/${item.name
+                                        .toLowerCase()
+                                        .replace(" ", "-")}`
                                     )
                             }
                           >
